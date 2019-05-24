@@ -15,6 +15,8 @@ public class EventManager {
 	
 protected SessionFactory sessionFactory;
 	
+	private static List<Event> allEvents = null;
+
 	public void setup() {
 		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
 		        .configure() // configures settings from hibernate.cfg.xml
@@ -27,15 +29,16 @@ protected SessionFactory sessionFactory;
 		}
     }
 	
-	@SuppressWarnings("unchecked")     
-	public List<Event> getAllEvents (){
-		List<Event> collection = null;
-		
+	public void loadData() {
 		Session session = sessionFactory.openSession();
-		collection = session.createCriteria(Event.class).list();
+		allEvents = session.createCriteria(Event.class).list();
 		
 		session.close();
-		return collection;
+	}
+	
+	@SuppressWarnings("unchecked")     
+	public List<Event> getAllEvents (){
+		return allEvents;
 	}
 	
 }

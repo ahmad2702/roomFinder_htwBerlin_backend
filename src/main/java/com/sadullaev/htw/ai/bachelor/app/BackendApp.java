@@ -11,13 +11,14 @@ import com.sadullaev.htw.ai.bachelor.model.Event;
 import com.sadullaev.htw.ai.bachelor.storage.EventManager;
 
 
-public class App 
+public class BackendApp 
 {
     public static void main( String[] args )
     {
         
     	EventManager eventManager = new EventManager();
         eventManager.setup();
+        eventManager.loadData();
     	
     	
     	get("/hello", (request, response)->{
