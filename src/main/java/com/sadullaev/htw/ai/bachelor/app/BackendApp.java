@@ -15,6 +15,7 @@ public class BackendApp
 {
     public static void main( String[] args )
     {
+    	port(7777);
         
     	EventManager eventManager = new EventManager();
         eventManager.setup();
