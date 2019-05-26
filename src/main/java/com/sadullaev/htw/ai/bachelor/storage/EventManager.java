@@ -29,6 +29,13 @@ protected SessionFactory sessionFactory;
 		}
     }
 	
+	public void loadApache() {
+		
+		
+		
+		
+	}
+	
 	public void loadData() {
 		Session session = sessionFactory.openSession();
 		allEvents = session.createCriteria(Event.class).list();
