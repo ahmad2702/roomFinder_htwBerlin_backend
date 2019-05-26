@@ -2,50 +2,65 @@ package com.sadullaev.htw.ai.bachelor.storage;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.apache.spark.SparkConf;
+import org.apache.spark.SparkContext;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.rdd.RDD;
+import org.apache.spark.sql.DataFrame;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Encoder;
+import org.apache.spark.sql.Encoders;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SQLContext;
+import org.mortbay.util.ajax.JSON;
 
 import com.sadullaev.htw.ai.bachelor.model.Event;
 
 public class EventManager {
 	
-protected SessionFactory sessionFactory;
 	
-	private static List<Event> allEvents = null;
+	private static DataFrame dataFrame = null;
+	
+	public static void setupAndLoad() {
+		SparkConf sparkConf = new SparkConf().setAppName("Read Op")
+                .setMaster("local[2]").set("spark.executor.memory","2g");
+        SparkContext sc = new SparkContext(sparkConf);
+        SQLContext sqlContext = new SQLContext(sc);
+        
+        String sql = "(select * from events) as all_events";
 
-	public void setup() {
-		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-		        .configure() // configures settings from hibernate.cfg.xml
-		        .build();
-		try {
-		    sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-		} catch (Exception ex) {
-		    StandardServiceRegistryBuilder.destroy(registry);
-		    System.out.println("Datenbank wurde nicht gefunden.");
-		}
-    }
+        dataFrame = sqlContext
+        	    .read()
+        	    .format("jdbc")
+        	    .option("url", "jdbc:mysql://localhost:3306/lsf_5?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=UTC")
+        	    .option("user", "root")
+        	    .option("password", "indigo27")
+        	    .option("dbtable", sql)
+        	    .load();
+        //dataFrame.filter("lecturer='Schuy'").show();
+	}
+
 	
-	public void loadApache() {
-		
-		
-		
-		
+	public List<String> getAll() {
+		JavaRDD<String> jsonRDD = dataFrame.toJSON().toJavaRDD();      
+		List<String> mylist = jsonRDD.collect();   
+		return mylist;
 	}
 	
-	public void loadData() {
-		Session session = sessionFactory.openSession();
-		allEvents = session.createCriteria(Event.class).list();
-		
-		session.close();
+	public List<String> getAll(int number) {
+		JavaRDD<String> jsonRDD = dataFrame.toJSON().toJavaRDD();      
+		List<String> mylist = jsonRDD.collect().stream().limit(number).collect(Collectors.toList());   
+		return mylist;
 	}
+
 	
 	@SuppressWarnings("unchecked")     
 	public List<Event> getAllEvents (){
-		return allEvents;
+		
+		
+		return null;
 	}
 	
 }

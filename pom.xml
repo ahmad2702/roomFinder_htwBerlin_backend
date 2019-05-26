@@ -11,6 +11,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
+  	<spark.version>1.6.3</spark.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -23,19 +24,21 @@
 	</dependency>
 	
 	<dependency>
-	    <groupId>org.hibernate.javax.persistence</groupId>
-	    <artifactId>hibernate-jpa-2.1-api</artifactId>
-	    <version>1.0.0.Final</version>
-    </dependency>
-    <dependency>
-	    <groupId>org.hibernate</groupId>
-	    <artifactId>hibernate-core</artifactId>
-	    <version>5.2.12.Final</version>
-    </dependency>
+		<groupId>org.apache.spark</groupId>
+		<artifactId>spark-sql_2.10</artifactId>
+		<version>${spark.version}</version>
+	</dependency>	
+	
+	<dependency>
+		<groupId>org.apache.spark</groupId>
+		<artifactId>spark-core_2.10</artifactId>
+		<version>${spark.version}</version>
+	</dependency>
+
     <dependency>
 	    <groupId>mysql</groupId>
 	    <artifactId>mysql-connector-java</artifactId>
-	    <version>5.1.46</version>
+	    <version>6.0.6</version>
     </dependency>
   	
 	<dependency>
@@ -99,8 +102,56 @@
 					</execution>
 				</executions>
 			</plugin>
-
-
+			
+			
+			<plugin>
+			      <groupId>org.apache.maven.plugins</groupId>
+			      <artifactId>maven-shade-plugin</artifactId>
+			      <version>1.5</version>
+			      <executions>
+			        <execution>
+			            <phase>package</phase>
+			            <goals>
+			              <goal>shade</goal>
+			            </goals>
+			            <configuration>
+			              <shadedArtifactAttached>true</shadedArtifactAttached>
+			              <shadedClassifierName>allinone</shadedClassifierName>
+			              <artifactSet>
+			                <includes>
+			                  <include>*:*</include>
+			                </includes>
+			              </artifactSet>
+			              <filters>
+			                <filter>
+			                  <artifact>*:*</artifact>
+			                  <excludes>
+			                    <exclude>META-INF/*.SF</exclude>
+			                    <exclude>META-INF/*.DSA</exclude>
+			                    <exclude>META-INF/*.RSA</exclude>
+			                  </excludes>
+			                </filter>
+			              </filters>
+			          <transformers>
+			            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+			              <resource>reference.conf</resource>
+			            </transformer>
+			            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+			              <resource>META-INF/spring.handlers</resource>
+			            </transformer>
+			            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+			              <resource>META-INF/spring.schemas</resource>
+			            </transformer>
+			            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+			                  <manifestEntries>
+			                <Main-Class>com.sadullaev.htw.ai.bachelor.app.BackendApp</Main-Class>
+			              </manifestEntries>
+			            </transformer>
+			          </transformers>
+			        </configuration>
+			          </execution>
+			        </executions>
+			  </plugin>
       
         </plugins>
     </build>

@@ -17,20 +17,22 @@ public class BackendApp
     {
     	port(7777);
         
-    	EventManager eventManager = new EventManager();
-        eventManager.setup();
-        eventManager.loadData();
     	
+    	EventManager.setupAndLoad();
     	
+        
+        EventManager eventManager = new EventManager();
+        
+        
     	get("/hello", (request, response)->{
     		response.type("text/plain");
     		return "Hallo";
     	});
     	
     	
-    	get("/sss", (request, response)->{
-    		response.type("text/plain");
-    		return "Sss";
+    	get("/events/all", (request, response)->{
+    		response.type("application/json");
+    		return eventManager.getAll();
     	});
     	
     	get("/events/:number", (request, response)->{
@@ -38,9 +40,8 @@ public class BackendApp
     		List<Event> collection = eventManager.getAllEvents();
     		
     		int number = Integer.parseInt(request.params(":number"));
-    		List<Event> result = collection.stream().limit(number).collect(Collectors.toList());
-    		
-    		return new Gson().toJson(new Gson().toJsonTree(result));
+
+    		return eventManager.getAll(number);
     	});
     	
     	

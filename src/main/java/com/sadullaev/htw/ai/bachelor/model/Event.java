@@ -3,53 +3,33 @@ package com.sadullaev.htw.ai.bachelor.model;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "events")
 public class Event {
 	
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+
     private int id;
 	
-	@Column(name = "date")
     private Date date;
 	
-	@Column(name = "begin")
     private Timestamp begin;
 	
-	@Column(name = "end")
     private Timestamp end;
 	
-	@Column(name = "lsf_nr")
-    private String lsfNr;
+    private String lsf_nr;
 	
-	@Column(name = "name")
     private String name;
 	
-	@Column(name = "lsf_id")
-    private double lsfId;
+    private double lsf_id;
 	
-	@Column(name = "building")
     private String building;
 	
-	@Column(name = "room")
     private String room;
 	
-	@Column(name = "lecturer")
     private String lecturer;
 	
 	public Event() {
 		
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -82,12 +62,12 @@ public class Event {
 		this.end = end;
 	}
 
-	public String getLsfNr() {
-		return lsfNr;
+	public String getLsf_nr() {
+		return lsf_nr;
 	}
-	
-	public void setLsfNr(String lsfNr) {
-		this.lsfNr = lsfNr;
+
+	public void setLsf_nr(String lsf_nr) {
+		this.lsf_nr = lsf_nr;
 	}
 
 	public String getName() {
@@ -98,12 +78,12 @@ public class Event {
 		this.name = name;
 	}
 
-	public double getLsfId() {
-		return lsfId;
+	public double getLsf_id() {
+		return lsf_id;
 	}
 
-	public void setLsfId(int lsfId) {
-		this.lsfId = lsfId;
+	public void setLsf_id(double lsf_id) {
+		this.lsf_id = lsf_id;
 	}
 
 	public String getBuilding() {
@@ -129,12 +109,8 @@ public class Event {
 	public void setLecturer(String lecturer) {
 		this.lecturer = lecturer;
 	}
-
-	@Override
-	public String toString() {
-		return "Event [date=" + date + ", begin=" + begin + ", end=" + end + ", lsfNr=" + lsfNr + ", name=" + name
-				+ ", lsfId=" + lsfId + ", building=" + building + ", room=" + room + ", lecturer=" + lecturer + "]";
-	}
+	
+	
 	
 	
 	
