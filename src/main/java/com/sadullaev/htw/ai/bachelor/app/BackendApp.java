@@ -30,6 +30,16 @@ public class BackendApp
     	});
     	
     	
+    	get("/events/pro", (request, response)->{
+    		response.type("application/json");
+    		
+    		String title = request.headers("title");
+    		int number = Integer.parseInt(request.headers("number"));
+    		
+    		return eventManager.getEventsFiltered(title, number);
+    	});
+    	
+    	
     	get("/events/all", (request, response)->{
     		response.type("application/json");
     		return eventManager.getAll();
@@ -40,7 +50,7 @@ public class BackendApp
     		List<Event> collection = eventManager.getAllEvents();
     		
     		int number = Integer.parseInt(request.params(":number"));
-
+    		
     		return eventManager.getAll(number);
     	});
     	

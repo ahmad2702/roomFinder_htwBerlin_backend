@@ -25,7 +25,7 @@ public class EventManager {
 	
 	public static void setupAndLoad() {
 		SparkConf sparkConf = new SparkConf().setAppName("Read Op")
-                .setMaster("local[2]").set("spark.executor.memory","2g");
+                .setMaster("local[*]").set("spark.executor.memory","1g");
         SparkContext sc = new SparkContext(sparkConf);
         SQLContext sqlContext = new SQLContext(sc);
         
@@ -51,6 +51,16 @@ public class EventManager {
 	
 	public List<String> getAll(int number) {
 		JavaRDD<String> jsonRDD = dataFrame.toJSON().toJavaRDD();      
+		List<String> mylist = jsonRDD.collect().stream().limit(number).collect(Collectors.toList());   
+		return mylist;
+	}
+	
+	
+	public List<String> getEventsFiltered(String title, int number) {
+		DataFrame dataFrameResult = dataFrame.filter(dataFrame.col("name").contains(title));
+		
+		JavaRDD<String> jsonRDD = dataFrameResult.toJSON().toJavaRDD();     
+		
 		List<String> mylist = jsonRDD.collect().stream().limit(number).collect(Collectors.toList());   
 		return mylist;
 	}
