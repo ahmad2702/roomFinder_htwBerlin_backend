@@ -46,9 +46,7 @@ public class BackendApp
     	});
     	
     	get("/events/:number", (request, response)->{
-    		response.type("application/json");
-    		List<Event> collection = eventManager.getAllEvents();
-    		
+    		response.type("application/json");    		
     		int number = Integer.parseInt(request.params(":number"));
     		
     		return eventManager.getAll(number);

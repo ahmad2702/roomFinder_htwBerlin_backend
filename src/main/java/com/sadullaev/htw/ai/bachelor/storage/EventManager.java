@@ -17,26 +17,51 @@ import org.apache.spark.sql.SQLContext;
 import org.mortbay.util.ajax.JSON;
 
 import com.sadullaev.htw.ai.bachelor.model.Event;
+import com.sadullaev.htw.ai.bachelor.propertiesLoader.ApacheSparkConnect;
+import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseConnect;
+import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseTables;
 
 public class EventManager {
-	
-	
+
 	private static DataFrame dataFrame = null;
+	private static ApacheSparkConnect apacheSparkConnect;
+	private static DatabaseConnect databaseConnect;
+	private static DatabaseTables databaseTables;
+	
 	
 	public static void setupAndLoad() {
-		SparkConf sparkConf = new SparkConf().setAppName("Read Op")
-                .setMaster("local[*]").set("spark.executor.memory","1g");
+		apacheSparkConnect = new ApacheSparkConnect();
+		databaseConnect = new DatabaseConnect();
+		databaseTables = new DatabaseTables();
+		
+		SparkConf sparkConf = new SparkConf().setAppName(ApacheSparkConnect.getAppName())
+                .setMaster(ApacheSparkConnect.getMaster()).set("spark.executor.memory", ApacheSparkConnect.getExecutorMemory());
         SparkContext sc = new SparkContext(sparkConf);
         SQLContext sqlContext = new SQLContext(sc);
         
-        String sql = "(select * from events) as all_events";
+        String sql = "(select * from "+ DatabaseTables.getAllEvents() +") as all_events";
 
         dataFrame = sqlContext
         	    .read()
         	    .format("jdbc")
-        	    .option("url", "jdbc:mysql://localhost:3306/lsf_5?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=UTC")
-        	    .option("user", "root")
-        	    .option("password", "indigo27")
+        	    .option("url", "jdbc:mysql://"
+        	    		+ DatabaseConnect.getHost()
+        	    		+ ":"
+        	    		+ DatabaseConnect.getPort()
+        	    		+ "/"
+        	    		+ DatabaseTables.getDbName()
+        	    		+ "?useUnicode="
+        	    		+ DatabaseConnect.getUseUnicode()
+        	    		+ "&characterEncoding="
+        	    		+ DatabaseConnect.getCharacterEncoding()
+        	    		+ "&autoReconnect="
+        	    		+ DatabaseConnect.getAutoReconnect()
+        	    		+ "&useSSL="
+        	    		+ DatabaseConnect.getUseSSL()
+        	    		+ "&serverTimezone="
+        	    		+ DatabaseConnect.getServerTimezone())
+        	    .option("user", DatabaseConnect.getLogin())
+        	    .option("password", DatabaseConnect.getPassword())
         	    .option("dbtable", sql)
         	    .load();
         //dataFrame.filter("lecturer='Schuy'").show();
@@ -65,12 +90,6 @@ public class EventManager {
 		return mylist;
 	}
 
-	
-	@SuppressWarnings("unchecked")     
-	public List<Event> getAllEvents (){
-		
-		
-		return null;
-	}
+
 	
 }
