@@ -1,12 +1,11 @@
 package com.sadullaev.htw.ai.bachelor.propertiesLoader;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class DatabaseTables {
 	
-	FileInputStream fis;
     Properties property = new Properties();
 	
     private static String dbName;
@@ -15,8 +14,8 @@ public class DatabaseTables {
 	public DatabaseTables() {
 		
 		try {
-            fis = new FileInputStream("src/main/resources/db_tables.properties");
-            property.load(fis);
+            InputStream input = DatabaseTables.class.getClassLoader().getResourceAsStream("db_tables.properties");
+            property.load(input);
             
             dbName = property.getProperty("db.name");
             allEvents = property.getProperty("all.events");

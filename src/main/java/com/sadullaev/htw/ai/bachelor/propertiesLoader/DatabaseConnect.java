@@ -1,12 +1,11 @@
 package com.sadullaev.htw.ai.bachelor.propertiesLoader;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class DatabaseConnect {
 	
-	FileInputStream fis;
     Properties property = new Properties();
 	
     private static String host;
@@ -24,8 +23,8 @@ public class DatabaseConnect {
 	public DatabaseConnect() {
 		
 		try {
-            fis = new FileInputStream("src/main/resources/db_connect.properties");
-            property.load(fis);
+            InputStream input = DatabaseConnect.class.getClassLoader().getResourceAsStream("db_connect.properties");
+            property.load(input);
 
             host = property.getProperty("host");
             port = property.getProperty("port");

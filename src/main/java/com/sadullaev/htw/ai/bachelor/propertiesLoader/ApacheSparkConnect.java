@@ -1,12 +1,11 @@
 package com.sadullaev.htw.ai.bachelor.propertiesLoader;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class ApacheSparkConnect {
 	
-	FileInputStream fis;
     Properties property = new Properties();
     
     private static String appName;
@@ -16,8 +15,8 @@ public class ApacheSparkConnect {
     public ApacheSparkConnect() {
     	
     	try {
-            fis = new FileInputStream("src/main/resources/apache_spark.properties");
-            property.load(fis);
+            InputStream input = ApacheSparkConnect.class.getClassLoader().getResourceAsStream("apache_spark.properties");
+            property.load(input);
 
             appName = property.getProperty("app.name");
             master = property.getProperty("set.master");
