@@ -29,7 +29,19 @@ public class BackendApp
     		return "Hallo";
     	});
     	
+    	get("/events/pro/test", (request, response)->{
+    		response.type("application/json");
+    		
+    		String title = "Comp";
+    		String date = "2019-06-02";
+    		int number = 10;
+    		
+    		return eventManager.getEventsFilteredFree(date, number);
+    	});
     	
+    	
+    	
+    	//for web
     	get("/events/pro", (request, response)->{
     		response.type("application/json");
     		
