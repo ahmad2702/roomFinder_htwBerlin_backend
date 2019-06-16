@@ -1,5 +1,7 @@
 package com.sadullaev.htw.ai.bachelor.storage;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +20,7 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
 import org.mortbay.util.ajax.JSON;
 
+import com.fasterxml.jackson.module.scala.MapModule;
 import com.sadullaev.htw.ai.bachelor.model.Event;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.ApacheSparkConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseConnect;
@@ -32,6 +35,7 @@ public class EventManager {
 	private static DatabaseConnect databaseConnect;
 	private static DatabaseTables databaseTables;
 	
+	final static DateTimeFormatter dateTimeFormatterSql = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
 	public static void setupAndLoad() {
 		apacheSparkConnect = new ApacheSparkConnect();
@@ -85,15 +89,60 @@ public class EventManager {
 	}
 	
 	
-	public List<String> getEventsFiltered(String title, int number) {
-		DataFrame dataFrameResult = dataFrame.filter(dataFrame.col("name").contains(title));
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public List<String> getEventsFiltered(String title, String date, String lecturer, int number) {
+		
+		Column dateColumn = new Column("date");
+		Column beginColumn = new Column("begin");
+		Column endColumn = new Column("end");
+		Column titleColumn = new Column("name");
+		Column lsfIdColumn = new Column("lsf_id");
+		Column roomColumn = new Column("room");
+		Column lecturerColumn = new Column("lecturer");
+		
+		DataFrame dataFrameResult = dataFrame
+				.filter(titleColumn.contains(title));
+		
+		if(date != null) {
+			dataFrameResult = dataFrameResult.filter(dateColumn.equalTo(date));
+		}else {
+			LocalDate localDate = LocalDate.now();
+			String now = localDate.format(dateTimeFormatterSql);
+			dataFrameResult = dataFrameResult.filter(dateColumn.gt(now));
+		}
+		
+		if(lecturer != null) {
+			dataFrameResult = dataFrameResult.filter(lecturerColumn.contains(lecturer));
+		}
+		
+		dataFrameResult = dataFrameResult.select(dateColumn, beginColumn, endColumn, titleColumn, lsfIdColumn, roomColumn, lecturerColumn);
 		
 		JavaRDD<String> jsonRDD = dataFrameResult.toJSON().toJavaRDD();     
-		
 		List<String> mylist = jsonRDD.collect().stream().limit(number).collect(Collectors.toList());   
 		return mylist;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public List<String> getEventsFilteredFree(String date, int number) {
 		DataFrame dataFrameResult = dataFrame.filter(dataFrame.col("date").contains(date));
 		

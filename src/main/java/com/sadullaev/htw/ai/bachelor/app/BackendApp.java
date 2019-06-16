@@ -16,17 +16,39 @@ public class BackendApp
     public static void main( String[] args )
     {
     	port(7777);
-        
+    	//ipAddress("192.168.0.80");
     	
     	EventManager.setupAndLoad();
-    	
-        
         EventManager eventManager = new EventManager();
         
         
     	get("/hello", (request, response)->{
     		response.type("text/plain");
     		return "Hallo";
+    	});
+    	
+    	
+    	get("/events/all", (request, response)->{
+    		response.type("application/json");
+    		return eventManager.getAll();
+    	});
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	//for web
+    	get("/events/finder", (request, response)->{
+    		response.type("application/json");
+    		
+    		String title = request.headers("title");
+    		String date = request.headers("date");
+    		String lecturer = request.headers("lecturer");
+    		int number = Integer.parseInt(request.headers("number"));
+    		
+    		return eventManager.getEventsFiltered(title, date, lecturer, number);
     	});
     	
     	get("/events/pro/test", (request, response)->{
@@ -41,21 +63,10 @@ public class BackendApp
     	
     	
     	
-    	//for web
-    	get("/events/pro", (request, response)->{
-    		response.type("application/json");
-    		
-    		String title = request.headers("title");
-    		int number = Integer.parseInt(request.headers("number"));
-    		
-    		return eventManager.getEventsFiltered(title, number);
-    	});
     	
     	
-    	get("/events/all", (request, response)->{
-    		response.type("application/json");
-    		return eventManager.getAll();
-    	});
+    	
+    	
     	
     	get("/events/:number", (request, response)->{
     		response.type("application/json");    		
@@ -63,8 +74,6 @@ public class BackendApp
     		
     		return eventManager.getAll(number);
     	});
-    	
-    	
     	
     	
     	
