@@ -44,22 +44,21 @@ public class BackendApp
     		response.type("application/json");
     		
     		String title = request.headers("title");
+    		System.out.println(title);
+    		
+    		
     		String date = request.headers("date");
+    		System.out.println(date);
+    		
     		String lecturer = request.headers("lecturer");
+    		System.out.println(lecturer);
+    		
     		int number = Integer.parseInt(request.headers("number"));
+    		System.out.println(number);
     		
     		return eventManager.getEventsFiltered(title, date, lecturer, number);
     	});
-    	
-    	get("/events/pro/test", (request, response)->{
-    		response.type("application/json");
-    		
-    		String title = "Comp";
-    		String date = "2019-06-02";
-    		int number = 10;
-    		
-    		return eventManager.getEventsFilteredFree(date, number);
-    	});
+
     	
     	
     	

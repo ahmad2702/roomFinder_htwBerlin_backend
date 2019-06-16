@@ -2,31 +2,20 @@ package com.sadullaev.htw.ai.bachelor.storage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.DataFrame;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Encoder;
-import org.apache.spark.sql.Encoders;
-import org.apache.spark.sql.GroupedData;
-import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
-import org.mortbay.util.ajax.JSON;
 
-import com.fasterxml.jackson.module.scala.MapModule;
-import com.sadullaev.htw.ai.bachelor.model.Event;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.ApacheSparkConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseTables;
 
-import scala.tools.nsc.typechecker.PatternMatching.DPLLSolver.Lit;
 
 public class EventManager {
 
@@ -113,15 +102,15 @@ public class EventManager {
 		DataFrame dataFrameResult = dataFrame
 				.filter(titleColumn.contains(title));
 		
-		if(date != null) {
-			dataFrameResult = dataFrameResult.filter(dateColumn.equalTo(date));
+		if(date != null && !date.equals("")) {
+			dataFrameResult = dataFrameResult.filter(dateColumn.gt(date));
 		}else {
 			LocalDate localDate = LocalDate.now();
 			String now = localDate.format(dateTimeFormatterSql);
 			dataFrameResult = dataFrameResult.filter(dateColumn.gt(now));
 		}
 		
-		if(lecturer != null) {
+		if(lecturer != null && !lecturer.equals("")) {
 			dataFrameResult = dataFrameResult.filter(lecturerColumn.contains(lecturer));
 		}
 		
@@ -129,32 +118,14 @@ public class EventManager {
 		
 		JavaRDD<String> jsonRDD = dataFrameResult.toJSON().toJavaRDD();     
 		List<String> mylist = jsonRDD.collect().stream().limit(number).collect(Collectors.toList());   
+		
+		//System.out.println(Arrays.toString(mylist.toArray()));
 		return mylist;
 	}
 
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public List<String> getEventsFilteredFree(String date, int number) {
-		DataFrame dataFrameResult = dataFrame.filter(dataFrame.col("date").contains(date));
-		
-		Column cols = new Column("room");
-		DataFrame rooms = dataFrame.select(cols).distinct();
-		rooms.show();
-		
-		JavaRDD<String> jsonRDD = dataFrameResult.toJSON().toJavaRDD();     
-		
-		List<String> mylist = jsonRDD.collect().stream().limit(number).collect(Collectors.toList());   
-		return mylist;
-	}
+
 	
 	
 	
