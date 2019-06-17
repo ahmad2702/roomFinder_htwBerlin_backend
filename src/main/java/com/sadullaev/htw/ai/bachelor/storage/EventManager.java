@@ -103,11 +103,11 @@ public class EventManager {
 				.filter(titleColumn.contains(title));
 		
 		if(date != null && !date.equals("")) {
-			dataFrameResult = dataFrameResult.filter(dateColumn.gt(date));
+			dataFrameResult = dataFrameResult.filter(dateColumn.geq(date));
 		}else {
 			LocalDate localDate = LocalDate.now();
 			String now = localDate.format(dateTimeFormatterSql);
-			dataFrameResult = dataFrameResult.filter(dateColumn.gt(now));
+			dataFrameResult = dataFrameResult.filter(dateColumn.geq(now));
 		}
 		
 		if(lecturer != null && !lecturer.equals("")) {
