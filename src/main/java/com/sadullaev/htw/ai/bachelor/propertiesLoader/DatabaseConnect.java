@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class DatabaseConnect {
 	
-    Properties property = new Properties();
+    static Properties property = new Properties();
 	
     private static String host;
     private static String port;
@@ -20,7 +20,7 @@ public class DatabaseConnect {
     private static String useSSL;
     private static String serverTimezone;
     
-	public DatabaseConnect() {
+	public static void load() {
 		
 		try {
             InputStream input = DatabaseConnect.class.getClassLoader().getResourceAsStream("db_connect.properties");

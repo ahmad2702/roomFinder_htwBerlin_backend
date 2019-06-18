@@ -1,13 +1,8 @@
 package com.sadullaev.htw.ai.bachelor.app;
 
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.port;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.google.gson.Gson;
-import com.sadullaev.htw.ai.bachelor.model.Event;
 import com.sadullaev.htw.ai.bachelor.storage.EventManager;
 
 

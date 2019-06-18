@@ -6,12 +6,12 @@ import java.util.Properties;
 
 public class DatabaseTables {
 	
-    Properties property = new Properties();
+    static Properties property = new Properties();
 	
     private static String dbName;
 	private static String allEvents;
 	
-	public DatabaseTables() {
+	public static void load() {
 		
 		try {
             InputStream input = DatabaseTables.class.getClassLoader().getResourceAsStream("db_tables.properties");

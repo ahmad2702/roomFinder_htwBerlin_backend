@@ -20,16 +20,18 @@ import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseTables;
 public class EventManager {
 
 	private static DataFrame dataFrame = null;
-	private static ApacheSparkConnect apacheSparkConnect;
-	private static DatabaseConnect databaseConnect;
-	private static DatabaseTables databaseTables;
 	
 	final static DateTimeFormatter dateTimeFormatterSql = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
 	public static void setupAndLoad() {
-		apacheSparkConnect = new ApacheSparkConnect();
-		databaseConnect = new DatabaseConnect();
-		databaseTables = new DatabaseTables();
+		new ApacheSparkConnect();
+		ApacheSparkConnect.load();
+		
+		new DatabaseConnect();
+		DatabaseConnect.load();
+		
+		new DatabaseTables();
+		DatabaseTables.load();
 		
 		SparkConf sparkConf = new SparkConf().setAppName(ApacheSparkConnect.getAppName())
                 .setMaster(ApacheSparkConnect.getMaster()).set("spark.executor.memory", ApacheSparkConnect.getExecutorMemory());

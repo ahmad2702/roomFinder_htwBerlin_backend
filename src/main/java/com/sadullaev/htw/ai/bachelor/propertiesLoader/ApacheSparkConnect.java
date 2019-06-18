@@ -6,13 +6,13 @@ import java.util.Properties;
 
 public class ApacheSparkConnect {
 	
-    Properties property = new Properties();
+    static Properties property = new Properties();
     
     private static String appName;
     private static String master;
     private static String executorMemory;
     
-    public ApacheSparkConnect() {
+    public static void load() {
     	
     	try {
             InputStream input = ApacheSparkConnect.class.getClassLoader().getResourceAsStream("apache_spark.properties");
