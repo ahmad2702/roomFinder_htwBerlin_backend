@@ -15,8 +15,9 @@ public class BackendApp
     	
     	EventManager.setupAndLoad();
         EventManager eventManager = new EventManager();
+        eventManager.loadAllFreeRooms();
         
-        
+
     	get("/hello", (request, response)->{
     		response.type("text/plain");
     		return "Hallo";
@@ -54,21 +55,31 @@ public class BackendApp
     		return eventManager.getEventsFiltered(title, date, lecturer, number);
     	});
 
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	get("/events/:number", (request, response)->{
+
+
+
+		
+    	get("/events/number/:number", (request, response)->{
     		response.type("application/json");    		
     		int number = Integer.parseInt(request.params(":number"));
     		
     		return eventManager.getAll(number);
     	});
-    	
+
+        
+        
+        //Free Rooms
+        get("/rooms/free", (request, response)->{
+    		response.type("application/json");    		
+    		String room = "WH Gebäude F 201";
+            String date = "2019-06-25";
+            int time = 30;
+    		
+    		return eventManager.getFreeRooms();
+    	});
+        
+        
+        
     	
     	
     }

@@ -1,49 +1,25 @@
 package com.sadullaev.htw.ai.bachelor.model;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Event {
 	
-
-    private int id;
+	private static Timestamp min;
+	private static Timestamp max;
 	
-    private Date date;
-	
-    private Timestamp begin;
-	
+	private Timestamp begin;
     private Timestamp end;
+    
+    private long time; // in Minuten
 	
-    private String lsf_nr;
-	
-    private String name;
-	
-    private double lsf_id;
-	
-    private String building;
-	
-    private String room;
-	
-    private String lecturer;
-	
-	public Event() {
+    public Event(Timestamp begin, Timestamp end) {
+		this.begin = begin;
+		this.end = end;
 		
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
+		time = (end.getHours()*60+end.getMinutes())-(begin.getHours()*60+begin.getMinutes());
+		
+		min = new Timestamp(begin.getYear(), begin.getMonth(), begin.getDate(), 7, 0, 0, 0);
+		max = new Timestamp(end.getYear(), end.getMonth(), end.getDate(), 22, 0, 0, 0);
 	}
 
 	public Timestamp getBegin() {
@@ -62,60 +38,26 @@ public class Event {
 		this.end = end;
 	}
 
-	public String getLsf_nr() {
-		return lsf_nr;
+	public long getTime() {
+		return time;
 	}
 
-	public void setLsf_nr(String lsf_nr) {
-		this.lsf_nr = lsf_nr;
+	public void setTime(long time) {
+		this.time = time;
 	}
 
-	public String getName() {
-		return name;
+	public static Timestamp getMin() {
+		return min;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public static Timestamp getMax() {
+		return max;
 	}
 
-	public double getLsf_id() {
-		return lsf_id;
+	@Override
+	public String toString() {
+		return "[begin=" + begin + ", end=" + end + ", time=" + time + "]";
 	}
-
-	public void setLsf_id(double lsf_id) {
-		this.lsf_id = lsf_id;
-	}
-
-	public String getBuilding() {
-		return building;
-	}
-
-	public void setBuilding(String building) {
-		this.building = building;
-	}
-
-	public String getRoom() {
-		return room;
-	}
-
-	public void setRoom(String room) {
-		this.room = room;
-	}
-
-	public String getLecturer() {
-		return lecturer;
-	}
-
-	public void setLecturer(String lecturer) {
-		this.lecturer = lecturer;
-	}
-	
-	
-	
-	
-	
-	
-	
 	
 	
 }
