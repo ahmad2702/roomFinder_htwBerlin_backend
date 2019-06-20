@@ -38,7 +38,20 @@ public class RoomFreeInfo {
 		this.rooms.add(room);
 	}
 	
-	public void sortRoom() {
+	public synchronized void addRest(Row[] roomList) {
+		for (int i = 0; i < roomList.length; i++) {
+			String roomNumber = roomList[i].getString(0);
+			if (!rooms.stream().anyMatch(str -> str.getRoom().equals(roomNumber))) {
+				Room room = new Room(roomNumber);
+				Event event = new Event(date);
+				room.add(event);
+				rooms.add(room);
+			}
+		}
+		sortRoom();
+	}
+	
+	public synchronized void sortRoom() {
 		Collections.sort(rooms, (a,b) -> a.getRoom().compareTo(b.getRoom()));
 	}
 

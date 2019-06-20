@@ -67,6 +67,10 @@ public class Room {
 			
 		}
 	}
+	
+	public void add(Event event) {
+		freeTimes.add(event);
+	}
 
 	public String getRoom() {
 		return room;

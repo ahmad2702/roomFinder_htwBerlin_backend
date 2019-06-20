@@ -25,6 +25,8 @@ import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseTables;
 
 public class EventManager {
 	
+	static Row[] rooms;
+	
 	static List<RoomFreeInfo> infos = new ArrayList<RoomFreeInfo>();
 	static RoomFreeInfo day;
 	
@@ -167,6 +169,7 @@ public class EventManager {
 			Room room = new Room(item._1.toString());
             room.extractAndSaveFreeTime(item._2);
             day.add(room);
+            day.addRest(rooms);
         });
 		
 		day.sortRoom();
@@ -180,11 +183,7 @@ public class EventManager {
 	
 	public void extractRoomsAtUniversity() {
 		Column roomColumn = new Column("room");
-		
-		Row[] rooms = dataFrame.select(roomColumn).distinct().collect();
-		
-		
-		
+		rooms = dataFrame.select(roomColumn).distinct().collect();
 	} 
 	
 	

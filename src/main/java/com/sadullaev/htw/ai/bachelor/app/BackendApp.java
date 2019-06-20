@@ -17,8 +17,9 @@ public class BackendApp
     	System.out.println("Apache Spark start..");
     	EventManager.setupAndLoad();
         EventManager eventManager = new EventManager();
-        eventManager.loadNewAll();
         eventManager.extractRoomsAtUniversity();
+        eventManager.loadNewAll();
+        
         
         System.out.println("Started!");
         
@@ -82,8 +83,8 @@ public class BackendApp
     		
     		return eventManager.getFreeRooms();
     	});
-        
-         */
+        */
+         
         
     	
     	
