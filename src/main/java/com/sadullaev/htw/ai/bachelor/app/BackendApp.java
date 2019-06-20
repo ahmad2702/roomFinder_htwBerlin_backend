@@ -10,14 +10,19 @@ public class BackendApp
 {
     public static void main( String[] args )
     {
+    	System.out.println("REST-API start..");
     	port(7777);
     	//ipAddress("192.168.0.80");
     	
+    	System.out.println("Apache Spark start..");
     	EventManager.setupAndLoad();
         EventManager eventManager = new EventManager();
-        eventManager.loadAllFreeRooms();
+        eventManager.loadNewAll();
+        eventManager.extractRoomsAtUniversity();
         
-
+        System.out.println("Started!");
+        
+        /*
     	get("/hello", (request, response)->{
     		response.type("text/plain");
     		return "Hallo";
@@ -65,7 +70,7 @@ public class BackendApp
     		
     		return eventManager.getAll(number);
     	});
-
+        
         
         
         //Free Rooms
@@ -78,7 +83,7 @@ public class BackendApp
     		return eventManager.getFreeRooms();
     	});
         
-        
+         */
         
     	
     	

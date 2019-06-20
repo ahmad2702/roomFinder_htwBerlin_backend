@@ -3,7 +3,6 @@ package com.sadullaev.htw.ai.bachelor.storage;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,16 +16,17 @@ import org.apache.spark.sql.SQLContext;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sadullaev.htw.ai.bachelor.model.EventRoom;
+import com.sadullaev.htw.ai.bachelor.model.Room;
+import com.sadullaev.htw.ai.bachelor.model.RoomFreeInfo;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.ApacheSparkConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseTables;
 
 
 public class EventManager {
-
-	static List<List<EventRoom>> allFreeSorted = new ArrayList<List<EventRoom>>();
-	static List<EventRoom> lll = new ArrayList<EventRoom>();
+	
+	static List<RoomFreeInfo> infos = new ArrayList<RoomFreeInfo>();
+	static RoomFreeInfo day;
 	
 	private static DataFrame dataFrame = null;
 	private static JavaSparkContext sc;
@@ -143,47 +143,55 @@ public class EventManager {
 	
 	
 	
-	
-	public void loadAllFreeRooms() {
+
+	public void loadNewAll() {
 		Column dateColumn = new Column("date");
 		Column roomColumn = new Column("room");
 		Column beginColumn = new Column("begin");
 		Column endColumn = new Column("end");
 		
-		LocalDate localDate = LocalDate.now();
-		String now = localDate.format(dateTimeFormatterSql);
+		//LocalDate localDate = LocalDate.now();
+		//String now = localDate.format(dateTimeFormatterSql);
 		
-		DataFrame dates = dataFrame
-				.select(dateColumn).filter(dateColumn.geq(now)).distinct();
-
-
-		
+	//schleife start
+		String datum = "2019-06-20";
 		
 		DataFrame dataFrameResult = dataFrame
-				.select(dateColumn, roomColumn, beginColumn, endColumn).filter(dateColumn.contains("2018-04-06"));
+				.select(dateColumn, roomColumn, beginColumn, endColumn).filter(dateColumn.contains(datum));
 		
 		//JavaRDD<Row> javaRDD = dataFrameResult.toJavaRDD();
-		JavaRDD<Row> javaRDD = sc.parallelize(dataFrameResult.collectAsList());
-				
+		JavaRDD<Row> javaRDD = sc.parallelize(dataFrameResult.collectAsList(),50);
+		day = new RoomFreeInfo(datum);
+		
 		javaRDD.groupBy(e -> e.get(1)).foreach(item -> {
-            EventRoom eventRoom = new EventRoom(item._1.toString(), item._2);    
-            lll.add(eventRoom);
-            //System.out.println(eventRoom.getRoom() + " : " + eventRoom.getFreeTimes());
+			Room room = new Room(item._1.toString());
+            room.extractAndSaveFreeTime(item._2);
+            day.add(room);
         });
 		
-		Collections.sort(lll, (a,b) -> a.getRoom().compareTo(b.getRoom()));
+		day.sortRoom();
 		
-		allFreeSorted.add(lll);
+		infos.add(day);
+	//schleife end
 		
-		
-		//System.out.println(allFreeSorted);
+		//System.out.println(infos);
 	}
+
+	
+	public void extractRoomsAtUniversity() {
+		Column roomColumn = new Column("room");
+		
+		Row[] rooms = dataFrame.select(roomColumn).distinct().collect();
+		
+		
+		
+	} 
 	
 	
 	
 	public String getFreeRooms() {
 		Gson gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
-		String rrr = gsonBuilder.toJson(allFreeSorted);
+		String rrr = gsonBuilder.toJson(infos);
 
 		return rrr;
 	}

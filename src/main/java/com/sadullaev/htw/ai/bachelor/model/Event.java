@@ -21,6 +21,10 @@ public class Event {
 		min = new Timestamp(begin.getYear(), begin.getMonth(), begin.getDate(), 7, 0, 0, 0);
 		max = new Timestamp(end.getYear(), end.getMonth(), end.getDate(), 22, 0, 0, 0);
 	}
+    
+    public Event() {
+    	
+    }
 
 	public Timestamp getBegin() {
 		return begin;
