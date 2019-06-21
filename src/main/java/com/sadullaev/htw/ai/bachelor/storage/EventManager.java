@@ -1,5 +1,9 @@
 package com.sadullaev.htw.ai.bachelor.storage;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -146,7 +150,7 @@ public class EventManager {
 	
 	
 
-	public void loadNewAll() {
+	public void loadNewByDate(String dateDate) {
 		Column dateColumn = new Column("date");
 		Column roomColumn = new Column("room");
 		Column beginColumn = new Column("begin");
@@ -156,7 +160,7 @@ public class EventManager {
 		//String now = localDate.format(dateTimeFormatterSql);
 		
 	//schleife start
-		String datum = "2019-06-20";
+		String datum = dateDate;
 		
 		DataFrame dataFrameResult = dataFrame
 				.select(dateColumn, roomColumn, beginColumn, endColumn).filter(dateColumn.contains(datum));
@@ -188,9 +192,18 @@ public class EventManager {
 	
 	
 	
-	public String getFreeRooms() {
+	public String getFreeRooms(Date dateAsDate, String dateAsString) {
+		
+		
+		if(!infos.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
+			loadNewByDate(dateAsString);
+		}
+		
+		
+		RoomFreeInfo roomFreeInfo = infos.stream().filter(str -> str.getDate().getTime()==dateAsDate.getTime()).findFirst().orElse(null);
+		
 		Gson gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
-		String rrr = gsonBuilder.toJson(infos);
+		String rrr = gsonBuilder.toJson(roomFreeInfo);
 
 		return rrr;
 	}

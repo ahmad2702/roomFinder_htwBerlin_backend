@@ -3,11 +3,19 @@ package com.sadullaev.htw.ai.bachelor.app;
 import static spark.Spark.get;
 import static spark.Spark.port;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import com.sadullaev.htw.ai.bachelor.storage.EventManager;
 
 
 public class BackendApp 
 {
+	
+	transient static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	
     public static void main( String[] args )
     {
     	System.out.println("REST-API start..");
@@ -18,8 +26,7 @@ public class BackendApp
     	EventManager.setupAndLoad();
         EventManager eventManager = new EventManager();
         eventManager.extractRoomsAtUniversity();
-        eventManager.loadNewAll();
-        
+       
         
         System.out.println("Started!");
         
@@ -78,10 +85,17 @@ public class BackendApp
         get("/rooms/free", (request, response)->{
     		response.type("application/json");    		
     		String room = "WH Gebäude F 201";
-            String date = "2019-06-25";
+    		String date = request.headers("date");
             int time = 30;
     		
-    		return eventManager.getFreeRooms();
+            Date dateFromRequest = null;
+            try {
+            	dateFromRequest=new Date(dateFormat.parse(date).getTime());
+    		} catch (ParseException e) {
+    			System.out.println("Date problem!");
+    		} 
+            
+    		return eventManager.getFreeRooms(dateFromRequest, date);
     	});
         
          
