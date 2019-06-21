@@ -30,7 +30,7 @@ public class BackendApp
         
         System.out.println("Started!");
         
-        /*
+
     	get("/hello", (request, response)->{
     		response.type("text/plain");
     		return "Hallo";
@@ -78,7 +78,7 @@ public class BackendApp
     		
     		return eventManager.getAll(number);
     	});
-        */
+
         
         
         //Free Rooms
