@@ -1,5 +1,6 @@
 package com.sadullaev.htw.ai.bachelor.model;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -10,7 +11,12 @@ import java.util.List;
 
 import org.apache.spark.sql.Row;
 
-public class RoomFreeInfo {
+public class RoomFreeInfo implements Serializable {
+	
+	/**
+	 * 
+	 */
+	transient private static final long serialVersionUID = 1L;
 	
 	private Date date;
 	private List<Room> rooms = new ArrayList<Room>();

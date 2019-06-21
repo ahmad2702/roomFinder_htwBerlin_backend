@@ -71,7 +71,7 @@ public class BackendApp
     		
     		return eventManager.getAll(number);
     	});
-        
+        */
         
         
         //Free Rooms
@@ -83,7 +83,7 @@ public class BackendApp
     		
     		return eventManager.getFreeRooms();
     	});
-        */
+        
          
         
     	

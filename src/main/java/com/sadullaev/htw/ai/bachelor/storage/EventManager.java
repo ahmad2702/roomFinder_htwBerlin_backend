@@ -169,9 +169,9 @@ public class EventManager {
 			Room room = new Room(item._1.toString());
             room.extractAndSaveFreeTime(item._2);
             day.add(room);
-            day.addRest(rooms);
+            
         });
-		
+		day.addRest(rooms);
 		day.sortRoom();
 		
 		infos.add(day);
