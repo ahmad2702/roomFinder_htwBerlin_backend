@@ -52,18 +52,22 @@ public class BackendApp
     	get("/events/finder", (request, response)->{
     		response.type("application/json");
     		
+    		System.out.println("-Event Finder-");
+    		
     		String title = request.headers("title");
-    		System.out.println(title);
+    		System.out.println("Titel: " + title);
     		
     		
     		String date = request.headers("date");
-    		System.out.println(date);
+    		System.out.println("Datum: " + date);
     		
     		String lecturer = request.headers("lecturer");
-    		System.out.println(lecturer);
+    		System.out.println("Dozent: " + lecturer);
     		
     		int number = Integer.parseInt(request.headers("number"));
-    		System.out.println(number);
+    		System.out.println("Anzahl: " + number);
+    		
+    		System.out.println("-----------------");
     		
     		return eventManager.getEventsFiltered(title, date, lecturer, number);
     	});
@@ -84,10 +88,25 @@ public class BackendApp
         //Free Rooms
         get("/rooms/free", (request, response)->{
     		response.type("application/json");    		
-    		String room = "WH Gebäude F 201";
-    		String date = request.headers("date");
-            int time = 30;
     		
+    		System.out.println("-Free Room Finder-");
+    		
+    		String date = request.headers("date");
+    		System.out.println("Datum: " + date);
+    		
+    		String room = request.headers("room");
+    		System.out.println("Raum: " + room);
+    		
+    		int time = Integer.parseInt(request.headers("time"));
+    		System.out.println("Dauer: " + time);
+    		
+            int number = Integer.parseInt(request.headers("number"));
+            System.out.println("Anzahl: " + number);
+            
+            System.out.println("-----------------");
+    		
+            
+            
             Date dateFromRequest = null;
             try {
             	dateFromRequest=new Date(dateFormat.parse(date).getTime());
@@ -95,7 +114,7 @@ public class BackendApp
     			System.out.println("Date problem!");
     		} 
             
-    		return eventManager.getFreeRooms(dateFromRequest, date);
+    		return eventManager.getFreeRooms(dateFromRequest, date, room, time, number);
     	});
         
          

@@ -192,7 +192,7 @@ public class EventManager {
 	
 	
 	
-	public String getFreeRooms(Date dateAsDate, String dateAsString) {
+	public String getFreeRooms(Date dateAsDate, String dateAsString, String room, int time, int number) {
 		
 		
 		if(!infos.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
