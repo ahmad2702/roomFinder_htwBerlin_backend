@@ -30,7 +30,7 @@ public class BackendApp
         
         System.out.println("Started!");
         
-
+        
     	get("/hello", (request, response)->{
     		response.type("text/plain");
     		return "Hallo";
@@ -97,7 +97,10 @@ public class BackendApp
     		String room = request.headers("room");
     		System.out.println("Raum: " + room);
     		
-    		int time = Integer.parseInt(request.headers("time"));
+    		int time = 0;
+    		if(request.headers("time") != null && !request.headers("time").equals("")) {
+    			time = Integer.parseInt(request.headers("time"));
+    		}
     		System.out.println("Dauer: " + time);
     		
             int number = Integer.parseInt(request.headers("number"));
@@ -119,6 +122,15 @@ public class BackendApp
         
          
         
+        /*
+        Date dateFromRequest = null;
+        try {
+        	dateFromRequest=new Date(dateFormat.parse("2019-06-24").getTime());
+		} catch (ParseException e) {
+			System.out.println("Date problem!");
+		} 
+        eventManager.getFreeRooms(dateFromRequest, "2019-06-24", "WH Gebäude C 624", 30, 30);
+        */
     	
     	
     }

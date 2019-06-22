@@ -12,11 +12,11 @@ import org.apache.spark.sql.Row;
 public class Room {
 	
 	private String room;
-	private List<Event> freeTimes = new ArrayList<Event>();
+	private List<Time> freeTimes = new ArrayList<Time>();
 	
 	transient DateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	public Room(String room, List<Event> freeTimes) {
+	public Room(String room, List<Time> freeTimes) {
 		this.room = room;
 		this.freeTimes = freeTimes;
 	}
@@ -30,7 +30,7 @@ public class Room {
 	}
 	
 	public void extractAndSaveFreeTime(Iterable<Row> actualEventsInRoom) throws ParseException {
-		List<Event> actualEvents = new ArrayList<Event>();
+		List<Time> actualEvents = new ArrayList<Time>();
 		
 		for(Row event : actualEventsInRoom) {
 			String beginTime=event.get(2).toString();  
@@ -39,14 +39,14 @@ public class Room {
 			Timestamp begin = new Timestamp(timeFormat.parse(beginTime).getTime());
 			Timestamp end = new Timestamp(timeFormat.parse(endTime).getTime());
 			
-			Event ev = new Event(begin, end);
+			Time ev = new Time(begin, end);
 			actualEvents.add(ev);
 		}
 		
 		if(actualEvents.size()!=0) {
 			
 			if ((actualEvents.get(0).getBegin().getTime()-actualEvents.get(0).getMin().getTime()) > 0 ) {
-				Event freeR = new Event(actualEvents.get(0).getMin(), actualEvents.get(0).getBegin());
+				Time freeR = new Time(actualEvents.get(0).getMin(), actualEvents.get(0).getBegin());
 				freeTimes.add(freeR);
 			}
 			
@@ -55,20 +55,20 @@ public class Room {
 					Timestamp begin = actualEvents.get(i).getEnd();
 					Timestamp end = actualEvents.get(i+1).getBegin();
 					
-					Event freeR = new Event(begin, end);
+					Time freeR = new Time(begin, end);
 					freeTimes.add(freeR);
 				}
 			}
 			
 			if ( (actualEvents.get(0).getMax().getTime()-actualEvents.get(actualEvents.size()-1).getEnd().getTime()) >0 ) {
-				Event freeR = new Event(actualEvents.get(actualEvents.size()-1).getEnd(), actualEvents.get(actualEvents.size()-1).getMax());
+				Time freeR = new Time(actualEvents.get(actualEvents.size()-1).getEnd(), actualEvents.get(actualEvents.size()-1).getMax());
 				freeTimes.add(freeR);
 			}
 			
 		}
 	}
 	
-	public void add(Event event) {
+	public void add(Time event) {
 		freeTimes.add(event);
 	}
 
@@ -80,11 +80,11 @@ public class Room {
 		this.room = room;
 	}
 
-	public List<Event> getFreeTimes() {
+	public List<Time> getFreeTimes() {
 		return freeTimes;
 	}
 
-	public void setFreeTimes(List<Event> freeTimes) {
+	public void setFreeTimes(List<Time> freeTimes) {
 		this.freeTimes = freeTimes;
 	}
 

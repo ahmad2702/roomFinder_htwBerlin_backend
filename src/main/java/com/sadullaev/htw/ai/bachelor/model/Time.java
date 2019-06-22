@@ -3,7 +3,7 @@ package com.sadullaev.htw.ai.bachelor.model;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-public class Event {
+public class Time {
 	
 	private static Timestamp min;
 	private static Timestamp max;
@@ -13,7 +13,7 @@ public class Event {
     
     private long time; // in Minuten
 	
-    public Event(Timestamp begin, Timestamp end) {
+    public Time(Timestamp begin, Timestamp end) {
 		this.begin = begin;
 		this.end = end;
 		
@@ -23,14 +23,14 @@ public class Event {
 		max = new Timestamp(end.getYear(), end.getMonth(), end.getDate(), 22, 0, 0, 0);
 	}
     
-    public Event(Date date) {
+    public Time(Date date) {
     	begin = new Timestamp(date.getYear(), date.getMonth(), date.getDate(), 7, 0, 0, 0);
 		end = new Timestamp(date.getYear(), date.getMonth(), date.getDate(), 22, 0, 0, 0);
 		
 		time = (end.getHours()*60+end.getMinutes())-(begin.getHours()*60+begin.getMinutes());
     }
     
-    public Event() {
+    public Time() {
     	
     }
 

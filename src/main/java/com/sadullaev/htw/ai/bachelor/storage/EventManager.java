@@ -1,6 +1,7 @@
 package com.sadullaev.htw.ai.bachelor.storage;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -20,11 +22,15 @@ import org.apache.spark.sql.SQLContext;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sadullaev.htw.ai.bachelor.model.FreeTimeForResponse;
 import com.sadullaev.htw.ai.bachelor.model.Room;
 import com.sadullaev.htw.ai.bachelor.model.RoomFreeInfo;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.ApacheSparkConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseTables;
+
+import scala.Tuple2;
+import scala.Tuple3;
 
 
 public class EventManager {
@@ -193,7 +199,7 @@ public class EventManager {
 	
 	
 	public String getFreeRooms(Date dateAsDate, String dateAsString, String room, int time, int number) {
-		
+		List<FreeTimeForResponse> result = null;
 		
 		if(!infos.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
 			loadNewByDate(dateAsString);
@@ -201,11 +207,28 @@ public class EventManager {
 		
 		
 		RoomFreeInfo roomFreeInfo = infos.stream().filter(str -> str.getDate().getTime()==dateAsDate.getTime()).findFirst().orElse(null);
+		List<Room> allRooms = roomFreeInfo.getRooms();
+		
+		if(room != null && !room.equals("")) {
+			allRooms = allRooms.stream().filter(x-> x.getRoom().contains(room)).collect(Collectors.toList());
+		}
+
+
+		result = allRooms.stream().flatMap(x -> x.getFreeTimes().stream().map(zeit -> new FreeTimeForResponse(x.getRoom(), zeit.getBegin(), zeit.getEnd(), zeit.getTime()))).collect(Collectors.toList());;
+		
+		if(time != 0) {
+			result = result.stream().filter(x-> x.getTime()>=time).collect(Collectors.toList());
+		}
+		
+		
+		
 		
 		Gson gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
-		String rrr = gsonBuilder.toJson(roomFreeInfo);
-
-		return rrr;
+		String json = gsonBuilder.toJson(result.stream().limit(number).collect(Collectors.toList()));
+		
+		//System.out.println(json);
+		
+		return json;
 	}
 	
 	

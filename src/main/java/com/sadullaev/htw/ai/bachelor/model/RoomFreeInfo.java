@@ -49,7 +49,7 @@ public class RoomFreeInfo implements Serializable {
 			String roomNumber = roomList[i].getString(0);
 			if (!rooms.stream().anyMatch(str -> str.getRoom().equals(roomNumber))) {
 				Room room = new Room(roomNumber);
-				Event event = new Event(date);
+				Time event = new Time(date);
 				room.add(event);
 				rooms.add(room);
 			}
