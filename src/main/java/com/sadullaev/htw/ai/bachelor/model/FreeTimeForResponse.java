@@ -1,19 +1,30 @@
 package com.sadullaev.htw.ai.bachelor.model;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 
 public class FreeTimeForResponse {
 	
+	private Date date;
 	private String roomName;
 	private Timestamp beginTime;
 	private Timestamp endTime;
 	private long time;
 	
-	public FreeTimeForResponse(String roomName, Timestamp beginTime, Timestamp endTime, long time) {
+	public FreeTimeForResponse(Date date, String roomName, Timestamp beginTime, Timestamp endTime, long time) {
+		this.date = date;
 		this.roomName = roomName;
 		this.beginTime = beginTime;
 		this.endTime = endTime;
 		this.time = time;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	public String getRoomName() {
@@ -50,9 +61,11 @@ public class FreeTimeForResponse {
 
 	@Override
 	public String toString() {
-		return "FreeTimeForResponse [roomName=" + roomName + ", beginTime=" + beginTime + ", endTime=" + endTime
-				+ ", time=" + time + "]";
+		return "FreeTimeForResponse [date=" + date + ", roomName=" + roomName + ", beginTime=" + beginTime
+				+ ", endTime=" + endTime + ", time=" + time + "]";
 	}
+	
+	
 	
 	
 	
