@@ -119,18 +119,6 @@ public class BackendApp
             
     		return eventManager.getFreeRooms(dateFromRequest, date, room, time, number);
     	});
-        
-         
-        
-        /*
-        Date dateFromRequest = null;
-        try {
-        	dateFromRequest=new Date(dateFormat.parse("2019-06-24").getTime());
-		} catch (ParseException e) {
-			System.out.println("Date problem!");
-		} 
-        eventManager.getFreeRooms(dateFromRequest, "2019-06-24", "WH Gebäude C 624", 30, 30);
-        */
     	
     	
     }
