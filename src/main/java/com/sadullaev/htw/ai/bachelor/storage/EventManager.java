@@ -1,16 +1,11 @@
 package com.sadullaev.htw.ai.bachelor.storage;
 
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -28,9 +23,6 @@ import com.sadullaev.htw.ai.bachelor.model.RoomFreeInfo;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.ApacheSparkConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseTables;
-
-import scala.Tuple2;
-import scala.Tuple3;
 
 
 public class EventManager {
@@ -87,7 +79,6 @@ public class EventManager {
         	    .option("password", DatabaseConnect.getPassword())
         	    .option("dbtable", sql)
         	    .load();
-        //dataFrame.filter("lecturer='Schuy'").show();
 	}
 
 	
@@ -145,7 +136,6 @@ public class EventManager {
 		JavaRDD<String> jsonRDD = dataFrameResult.toJSON().toJavaRDD();     
 		List<String> mylist = jsonRDD.collect().stream().limit(number).collect(Collectors.toList());   
 		
-		//System.out.println(Arrays.toString(mylist.toArray()));
 		return mylist;
 	}
 
@@ -153,7 +143,10 @@ public class EventManager {
 	
 	
 	
-	
+	public void extractRoomsAtUniversity() {
+		Column roomColumn = new Column("room");
+		rooms = dataFrame.select(roomColumn).distinct().collect();
+	}
 	
 
 	public void loadNewByDate(String dateDate) {
@@ -162,10 +155,7 @@ public class EventManager {
 		Column beginColumn = new Column("begin");
 		Column endColumn = new Column("end");
 		
-		//LocalDate localDate = LocalDate.now();
-		//String now = localDate.format(dateTimeFormatterSql);
-		
-	//schleife start
+	//start
 		String datum = dateDate;
 		
 		DataFrame dataFrameResult = dataFrame
@@ -185,19 +175,9 @@ public class EventManager {
 		day.sortRoom();
 		
 		infos.add(day);
-	//schleife end
-		
-		//System.out.println(infos);
+	//end
 	}
 
-	
-	public void extractRoomsAtUniversity() {
-		Column roomColumn = new Column("room");
-		rooms = dataFrame.select(roomColumn).distinct().collect();
-	} 
-	
-	
-	
 	public String getFreeRooms(Date dateAsDate, String dateAsString, String room, int time, int number) {
 		List<FreeTimeForResponse> result = null;
 		
@@ -222,36 +202,14 @@ public class EventManager {
 		}else {
 			result = result.stream().filter(x-> x.getTime()!=0).collect(Collectors.toList());
 		}
-		
-		
-		
-		
+
 		Gson gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
 		String json = gsonBuilder.toJson(result.stream().limit(number).collect(Collectors.toList()));
-		
-		//System.out.println(json);
 		
 		return json;
 	}
 	
-	
-	
-	/**
-		javaRDD.groupBy(e -> e.get(1)).foreach(item -> {
-            item._2.forEach(x ->  {
-            	System.out.println(x.get(1)); 
-            });        		
-        });
-		
-		
-		javaRDD.foreach(item -> {
-            System.out.println(item.get(1)); 
-        });
-		*/
-	
-	
-	
-	
+
 	
 
 	

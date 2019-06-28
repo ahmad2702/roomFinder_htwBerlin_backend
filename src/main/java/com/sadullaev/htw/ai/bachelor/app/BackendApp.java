@@ -20,7 +20,6 @@ public class BackendApp
     {
     	System.out.println("REST-API start..");
     	port(7777);
-    	//ipAddress("192.168.0.80");
     	
     	System.out.println("Apache Spark start..");
     	EventManager.setupAndLoad();
@@ -31,24 +30,44 @@ public class BackendApp
         System.out.println("Started!");
         
         
-    	get("/hello", (request, response)->{
+        // For Statuc check
+    	get("/status", (request, response)->{
     		response.type("text/plain");
-    		return "Hallo";
+    		response.status(200);
+    		return "OK";
     	});
     	
     	
+    	
+    	
+    	
+    	
+    	
+    	//----------------------------------------------------------------------------------------------
+    	// For Test
     	get("/events/all", (request, response)->{
     		response.type("application/json");
     		return eventManager.getAll();
     	});
     	
+    	get("/events/number/:number", (request, response)->{
+    		response.type("application/json");    		
+    		int number = Integer.parseInt(request.params(":number"));
+    		
+    		return eventManager.getAll(number);
+    	});
+    	//----------------------------------------------------------------------------------------------
     	
     	
     	
     	
     	
     	
-    	//for web
+    	
+    	
+    	
+    	//----------------------------------------------------------------------------------------------
+    	//Event Search
     	get("/events/finder", (request, response)->{
     		response.type("application/json");
     		
@@ -71,21 +90,16 @@ public class BackendApp
     		
     		return eventManager.getEventsFiltered(title, date, lecturer, number);
     	});
-
+    	//----------------------------------------------------------------------------------------------
 
 
 
 		
-    	get("/events/number/:number", (request, response)->{
-    		response.type("application/json");    		
-    		int number = Integer.parseInt(request.params(":number"));
-    		
-    		return eventManager.getAll(number);
-    	});
+    	
 
         
-        
-        //Free Rooms
+    	//----------------------------------------------------------------------------------------------
+        //Free Rooms Search
         get("/rooms/free", (request, response)->{
     		response.type("application/json");    		
     		
@@ -119,7 +133,13 @@ public class BackendApp
             
     		return eventManager.getFreeRooms(dateFromRequest, date, room, time, number);
     	});
-    	
+      //----------------------------------------------------------------------------------------------
+        
+        
+        
+        
+        
+        
     	
     }
 }
