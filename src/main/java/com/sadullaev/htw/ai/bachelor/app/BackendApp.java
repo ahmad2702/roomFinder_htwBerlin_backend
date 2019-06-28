@@ -30,7 +30,7 @@ public class BackendApp
         System.out.println("Started!");
         
         
-        // For Statuc check
+        // For status check
     	get("/status", (request, response)->{
     		response.type("text/plain");
     		response.status(200);
@@ -73,6 +73,13 @@ public class BackendApp
     		
     		System.out.println("-Event Finder-");
     		
+    		DateFormat dF = new SimpleDateFormat("dd-mm-YYYY HH:mm:ss");
+    		java.util.Date cD = new java.util.Date();
+    		System.out.println("* " + dF.format(cD));
+    		
+    		String ip = request.ip();
+    		System.out.println("* " + ip);
+    		
     		String title = request.headers("title");
     		System.out.println("Titel: " + title);
     		
@@ -104,6 +111,13 @@ public class BackendApp
     		response.type("application/json");    		
     		
     		System.out.println("-Free Room Finder-");
+    		
+    		DateFormat dF = new SimpleDateFormat("dd-mm-YYYY HH:mm:ss");
+    		java.util.Date cD = new java.util.Date();
+    		System.out.println("* " + dF.format(cD));
+    		
+    		String ip = request.ip();
+    		System.out.println("* " + ip);
     		
     		String date = request.headers("date");
     		System.out.println("Datum: " + date);
