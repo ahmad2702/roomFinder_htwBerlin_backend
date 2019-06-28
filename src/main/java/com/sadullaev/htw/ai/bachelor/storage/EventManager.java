@@ -216,8 +216,11 @@ public class EventManager {
 
 		result = allRooms.stream().flatMap(x -> x.getFreeTimes().stream().map(zeit -> new FreeTimeForResponse(dateAsDate, x.getRoom(), zeit.getBegin(), zeit.getEnd(), zeit.getTime()))).collect(Collectors.toList());;
 		
+		
 		if(time != 0) {
 			result = result.stream().filter(x-> x.getTime()>=time).collect(Collectors.toList());
+		}else {
+			result = result.stream().filter(x-> x.getTime()!=0).collect(Collectors.toList());
 		}
 		
 		
