@@ -2,36 +2,58 @@ package com.sadullaev.htw.ai.bachelor.model;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Calendar;
 
 public class Time {
 	
-	private static Timestamp min;
-	private static Timestamp max;
+	transient private static final int DEFAULT_START_TIME = 7;
+	transient private static final int DEFAULT_END_TIME = 22;
+	
+	transient private Timestamp min;
+	transient private Timestamp max;
 	
 	private Timestamp begin;
     private Timestamp end;
     
     private long time; // in Minuten
 	
+    public Time() {
+    	
+    }
+    
     public Time(Timestamp begin, Timestamp end) {
 		this.begin = begin;
 		this.end = end;
 		
-		time = (end.getHours()*60+end.getMinutes())-(begin.getHours()*60+begin.getMinutes());
+		calculateTime();
 		
-		min = new Timestamp(begin.getYear(), begin.getMonth(), begin.getDate(), 7, 0, 0, 0);
-		max = new Timestamp(end.getYear(), end.getMonth(), end.getDate(), 22, 0, 0, 0);
+		Date date = new Date(begin.getTime());
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+
+		calendar.set(Calendar.HOUR_OF_DAY, DEFAULT_START_TIME);
+		calendar.set(Calendar.MINUTE, 0);
+		min = new Timestamp(calendar.getTime().getTime());
+		
+		
+		calendar.set(Calendar.HOUR_OF_DAY, DEFAULT_END_TIME);
+		calendar.set(Calendar.MINUTE, 0);
+		max = new Timestamp(calendar.getTime().getTime());
 	}
     
     public Time(Date date) {
-    	begin = new Timestamp(date.getYear(), date.getMonth(), date.getDate(), 7, 0, 0, 0);
-		end = new Timestamp(date.getYear(), date.getMonth(), date.getDate(), 22, 0, 0, 0);
-		
-		time = (end.getHours()*60+end.getMinutes())-(begin.getHours()*60+begin.getMinutes());
-    }
-    
-    public Time() {
+    	Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
     	
+		calendar.set(Calendar.HOUR_OF_DAY, DEFAULT_START_TIME);
+		calendar.set(Calendar.MINUTE, 0);
+    	begin = new Timestamp(calendar.getTime().getTime());
+    	
+    	calendar.set(Calendar.HOUR_OF_DAY, DEFAULT_END_TIME);
+		calendar.set(Calendar.MINUTE, 0);
+    	end = new Timestamp(calendar.getTime().getTime());
+		
+		calculateTime();
     }
 
 	public Timestamp getBegin() {
@@ -57,12 +79,26 @@ public class Time {
 	public void setTime(long time) {
 		this.time = time;
 	}
+	
+	public void calculateTime() {
+		Date dateBegin = new Date(begin.getTime());
+		Calendar beginCalendar = Calendar.getInstance();
+		beginCalendar.setTime(dateBegin);
+		
+		
+		Date dateEnd = new Date(end.getTime());
+		Calendar endCalendar = Calendar.getInstance();
+		endCalendar.setTime(dateEnd);
+		
+		time = (endCalendar.get(Calendar.HOUR_OF_DAY)*60+endCalendar.get(Calendar.MINUTE))
+				-(beginCalendar.get(Calendar.HOUR_OF_DAY)*60+beginCalendar.get(Calendar.MINUTE));
+	}
 
-	public static Timestamp getMin() {
+	public Timestamp getMin() {
 		return min;
 	}
 
-	public static Timestamp getMax() {
+	public Timestamp getMax() {
 		return max;
 	}
 
