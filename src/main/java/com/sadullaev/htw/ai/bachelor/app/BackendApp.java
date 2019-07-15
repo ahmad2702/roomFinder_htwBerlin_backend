@@ -125,6 +125,9 @@ public class BackendApp
     		String room = request.headers("room");
     		System.out.println("Raum: " + room);
     		
+    		String uhr = request.headers("uhr");
+    		System.out.println("Uhr: " + uhr);
+    		
     		int time = 0;
     		if(request.headers("time") != null && !request.headers("time").equals("")) {
     			time = Integer.parseInt(request.headers("time"));
@@ -145,7 +148,7 @@ public class BackendApp
     			System.out.println("Date problem!");
     		} 
             
-    		return eventManager.getFreeRooms(dateFromRequest, date, room, time, number);
+    		return eventManager.getFreeRooms(dateFromRequest, date, room, uhr, time, number);
     	});
       //----------------------------------------------------------------------------------------------
         

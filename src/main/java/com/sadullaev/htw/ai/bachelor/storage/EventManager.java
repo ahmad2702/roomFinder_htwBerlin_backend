@@ -1,9 +1,13 @@
 package com.sadullaev.htw.ai.bachelor.storage;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -178,7 +182,7 @@ public class EventManager {
 	//end
 	}
 
-	public String getFreeRooms(Date dateAsDate, String dateAsString, String room, int time, int number) {
+	public String getFreeRooms(Date dateAsDate, String dateAsString, String room, String uhr, int time, int number) {
 		List<FreeTimeForResponse> result = null;
 		
 		if(!infos.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
@@ -196,13 +200,23 @@ public class EventManager {
 
 		result = allRooms.stream().flatMap(x -> x.getFreeTimes().stream().map(zeit -> new FreeTimeForResponse(dateAsDate, x.getRoom(), zeit.getBegin(), zeit.getEnd(), zeit.getTime()))).collect(Collectors.toList());;
 		
+
+		if(uhr != null && !uhr.equals("")) {
+			String uhrAsDate = dateAsDate + " " + uhr;
+			LocalDateTime uhrForFilter = LocalDateTime.parse(uhrAsDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+			
+			result = result.stream().filter(x-> x.getBeginTime().getTime() >= Timestamp.valueOf(uhrForFilter).getTime()).collect(Collectors.toList());
+		}
+		
 		
 		if(time != 0) {
 			result = result.stream().filter(x-> x.getTime()>=time).collect(Collectors.toList());
 		}else {
 			result = result.stream().filter(x-> x.getTime()!=0).collect(Collectors.toList());
 		}
-
+		
+		result.sort(Comparator.comparing(FreeTimeForResponse::getBeginTime));
+				
 		Gson gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
 		String json = gsonBuilder.toJson(result.stream().limit(number).collect(Collectors.toList()));
 		
