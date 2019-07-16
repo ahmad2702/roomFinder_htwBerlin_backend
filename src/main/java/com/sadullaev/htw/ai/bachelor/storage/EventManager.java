@@ -135,7 +135,7 @@ public class EventManager {
 			dataFrameResult = dataFrameResult.filter(lecturerColumn.contains(lecturer));
 		}
 		
-		dataFrameResult = dataFrameResult.select(dateColumn, beginColumn, endColumn, titleColumn, lsfIdColumn, roomColumn, lecturerColumn);
+		dataFrameResult = dataFrameResult.select(dateColumn, beginColumn, endColumn, titleColumn, lsfIdColumn, roomColumn, lecturerColumn).sort(dateColumn);
 		
 		JavaRDD<String> jsonRDD = dataFrameResult.toJSON().toJavaRDD();     
 		List<String> mylist = jsonRDD.collect().stream().limit(number).collect(Collectors.toList());   
