@@ -71,9 +71,10 @@ public class BackendApp
     	get("/events/finder", (request, response)->{
     		response.type("application/json");
     		
+    		System.out.println("-----------------");
     		System.out.println("-Event Finder-");
     		
-    		DateFormat dF = new SimpleDateFormat("dd-mm-YYYY HH:mm:ss");
+    		DateFormat dF = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     		java.util.Date cD = new java.util.Date();
     		System.out.println("* " + dF.format(cD));
     		
@@ -110,9 +111,10 @@ public class BackendApp
         get("/rooms/free", (request, response)->{
     		response.type("application/json");    		
     		
+    		System.out.println("-----------------");
     		System.out.println("-Free Room Finder-");
     		
-    		DateFormat dF = new SimpleDateFormat("dd-mm-YYYY HH:mm:ss");
+    		DateFormat dF = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     		java.util.Date cD = new java.util.Date();
     		System.out.println("* " + dF.format(cD));
     		
