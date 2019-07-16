@@ -124,7 +124,7 @@ public class BackendApp
     		String date = request.headers("date");
     		System.out.println("Datum: " + date);
     		
-    		String room = request.headers("room");
+    		String room = new String(request.headers("room").getBytes("ISO-8859-1"), "UTF-8");
     		System.out.println("Raum: " + room);
     		
     		String uhr = request.headers("uhr");
