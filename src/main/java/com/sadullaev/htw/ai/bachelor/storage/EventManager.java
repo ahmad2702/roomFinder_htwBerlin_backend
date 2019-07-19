@@ -182,7 +182,7 @@ public class EventManager {
 	//end
 	}
 
-	public String getFreeRooms(Date dateAsDate, String dateAsString, String room, String uhr, int time, int number) {
+	public String getFreeRooms(Date dateAsDate, String dateAsString, String room, int time, int number) {
 		List<FreeTimeForResponse> result = null;
 		
 		if(!infos.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
@@ -199,19 +199,13 @@ public class EventManager {
 
 
 		result = allRooms.stream().flatMap(x -> x.getFreeTimes().stream().map(zeit -> new FreeTimeForResponse(dateAsDate, x.getRoom(), zeit.getBegin(), zeit.getEnd(), zeit.getTime()))).collect(Collectors.toList());;
-		
-		
-		String uhrAsDate = dateAsDate + " " + uhr;
-		LocalDateTime uhrForFilter = LocalDateTime.parse(uhrAsDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-		if(uhr != null && !uhr.equals("")) {			
-			//result = result.stream().filter(x-> x.getBeginTime().getTime() >= Timestamp.valueOf(uhrForFilter).getTime()).collect(Collectors.toList());
-		}
+
 		
 		
 		int timeAsIntAndInMiliseconds = time * 60000;
 		if(time != 0) {
-			result = result.stream().filter(x-> x.getTime()!=0 && 
-					x.getEndTime().getTime()>= (Timestamp.valueOf(uhrForFilter).getTime()+timeAsIntAndInMiliseconds)).collect(Collectors.toList());
+			result = result.stream().filter(x-> x.getTime()>=time && 
+					x.getEndTime().getTime()>= (dateAsDate.getTime()+timeAsIntAndInMiliseconds)).collect(Collectors.toList());
 		}else {
 			result = result.stream().filter(x-> x.getTime()!=0).collect(Collectors.toList());
 		}

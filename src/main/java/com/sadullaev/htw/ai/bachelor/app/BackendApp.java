@@ -124,11 +124,11 @@ public class BackendApp
     		String date = request.headers("date");
     		System.out.println("Datum: " + date);
     		
-    		String room = new String(request.headers("room").getBytes("ISO-8859-1"), "UTF-8");
+    		String room = null;
+    		if(request.headers("room") != null && !request.headers("room").equals("")) {
+    			room = new String(request.headers("room").getBytes("ISO-8859-1"), "UTF-8");
+    		}
     		System.out.println("Raum: " + room);
-    		
-    		String uhr = request.headers("uhr");
-    		System.out.println("Uhr: " + uhr);
     		
     		int time = 0;
     		if(request.headers("time") != null && !request.headers("time").equals("")) {
@@ -150,7 +150,7 @@ public class BackendApp
     			System.out.println("Date problem!");
     		} 
             
-    		return eventManager.getFreeRooms(dateFromRequest, date, room, uhr, time, number);
+    		return eventManager.getFreeRooms(dateFromRequest, date, room, time, number);
     	});
       //----------------------------------------------------------------------------------------------
         
