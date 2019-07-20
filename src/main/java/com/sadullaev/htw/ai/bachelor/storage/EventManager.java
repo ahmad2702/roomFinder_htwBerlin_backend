@@ -1,10 +1,7 @@
 package com.sadullaev.htw.ai.bachelor.storage;
 
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,7 +50,9 @@ public class EventManager {
 		DatabaseTables.load();
 		
 		SparkConf sparkConf = new SparkConf().setAppName(ApacheSparkConnect.getAppName())
-                .setMaster(ApacheSparkConnect.getMaster()).set("spark.executor.memory", ApacheSparkConnect.getExecutorMemory());
+                .setMaster(ApacheSparkConnect.getMaster())
+                .set("spark.executor.memory", ApacheSparkConnect.getExecutorMemory())
+                .set("spark.rpc.askTimeout", "800s");
 		sc = new JavaSparkContext(sparkConf);
 		sc.setLogLevel("ERROR");
 		sqlContext = new SQLContext(sc);
