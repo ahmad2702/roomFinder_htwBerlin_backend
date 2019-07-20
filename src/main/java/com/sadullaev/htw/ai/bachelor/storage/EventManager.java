@@ -153,14 +153,19 @@ public class EventManager {
 	}
 	
 
-	public void loadNewByDate(String dateDate) {
+	public synchronized void loadNewByDate(Date dateAsDate, String dateAsString) {
+		
+		if(infos.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
+			return;
+		}
+		
 		Column dateColumn = new Column("date");
 		Column roomColumn = new Column("room");
 		Column beginColumn = new Column("begin");
 		Column endColumn = new Column("end");
 		
 	//start
-		String datum = dateDate;
+		String datum = dateAsString;
 		
 		DataFrame dataFrameResult = dataFrame
 				.select(dateColumn, roomColumn, beginColumn, endColumn).filter(dateColumn.contains(datum));
@@ -186,7 +191,7 @@ public class EventManager {
 		List<FreeTimeForResponse> result = null;
 		
 		if(!infos.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
-			loadNewByDate(dateAsString);
+			loadNewByDate(dateAsDate,dateAsString);
 		}
 		
 		
