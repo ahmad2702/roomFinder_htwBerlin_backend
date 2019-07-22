@@ -20,6 +20,10 @@ public class DatabaseConnect {
     private static String useSSL;
     private static String serverTimezone;
     
+    public DatabaseConnect() {
+    	load();
+    }
+    
 	public static void load() {
 		
 		try {

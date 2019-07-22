@@ -18,20 +18,20 @@ import org.apache.spark.sql.SQLContext;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sadullaev.htw.ai.bachelor.model.FreeTimeForResponse;
-import com.sadullaev.htw.ai.bachelor.model.Room;
-import com.sadullaev.htw.ai.bachelor.model.RoomFreeInfo;
+import com.sadullaev.htw.ai.bachelor.data.FreeTimeResponse;
+import com.sadullaev.htw.ai.bachelor.data.Room;
+import com.sadullaev.htw.ai.bachelor.data.FreeRoomList;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.ApacheSparkConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseTables;
 
 
-public class EventManager {
+public class EventManager implements EventManagerInterface{
 	
 	static Row[] rooms;
 	
-	static List<RoomFreeInfo> infos = new ArrayList<RoomFreeInfo>();
-	static RoomFreeInfo day;
+	static List<FreeRoomList> freeRoomList = new ArrayList<FreeRoomList>();
+	static FreeRoomList day;
 	
 	private static DataFrame dataFrame = null;
 	private static JavaSparkContext sc;
@@ -40,15 +40,6 @@ public class EventManager {
 	final static DateTimeFormatter dateTimeFormatterSql = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
 	public static void setupAndLoad() {
-		new ApacheSparkConnect();
-		ApacheSparkConnect.load();
-		
-		new DatabaseConnect();
-		DatabaseConnect.load();
-		
-		new DatabaseTables();
-		DatabaseTables.load();
-		
 		SparkConf sparkConf = new SparkConf().setAppName(ApacheSparkConnect.getAppName())
                 .setMaster(ApacheSparkConnect.getMaster())
                 .set("spark.executor.memory", ApacheSparkConnect.getExecutorMemory())
@@ -154,7 +145,7 @@ public class EventManager {
 
 	public synchronized void loadNewByDate(Date dateAsDate, String dateAsString) {
 		
-		if(infos.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
+		if(freeRoomList.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
 			return;
 		}
 		
@@ -171,7 +162,7 @@ public class EventManager {
 		
 		//JavaRDD<Row> javaRDD = dataFrameResult.toJavaRDD();
 		JavaRDD<Row> javaRDD = sc.parallelize(dataFrameResult.collectAsList(),50);
-		day = new RoomFreeInfo(datum);
+		day = new FreeRoomList(datum);
 		
 		javaRDD.groupBy(e -> e.get(1)).foreach(item -> {
 			Room room = new Room(item._1.toString());
@@ -182,19 +173,19 @@ public class EventManager {
 		day.addRest(rooms);
 		day.sortRoom();
 		
-		infos.add(day);
+		freeRoomList.add(day);
 	//end
 	}
 
 	public String getFreeRooms(Date dateAsDate, String dateAsString, String room, int time, int number) {
-		List<FreeTimeForResponse> result = null;
+		List<FreeTimeResponse> result = null;
 		
-		if(!infos.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
+		if(!freeRoomList.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
 			loadNewByDate(dateAsDate,dateAsString);
 		}
 		
 		
-		RoomFreeInfo roomFreeInfo = infos.stream().filter(str -> str.getDate().getTime()==dateAsDate.getTime()).findFirst().orElse(null);
+		FreeRoomList roomFreeInfo = freeRoomList.stream().filter(str -> str.getDate().getTime()==dateAsDate.getTime()).findFirst().orElse(null);
 		List<Room> allRooms = roomFreeInfo.getRooms();
 		
 		if(room != null && !room.equals("")) {
@@ -202,7 +193,7 @@ public class EventManager {
 		}
 
 
-		result = allRooms.stream().flatMap(x -> x.getFreeTimes().stream().map(zeit -> new FreeTimeForResponse(dateAsDate, x.getRoom(), zeit.getBegin(), zeit.getEnd(), zeit.getTime()))).collect(Collectors.toList());;
+		result = allRooms.stream().flatMap(x -> x.getFreeTimes().stream().map(zeit -> new FreeTimeResponse(dateAsDate, x.getRoom(), zeit.getBegin(), zeit.getEnd(), zeit.getTime()))).collect(Collectors.toList());;
 
 		
 		
@@ -214,7 +205,7 @@ public class EventManager {
 			result = result.stream().filter(x-> x.getTime()!=0).collect(Collectors.toList());
 		}
 		
-		result.sort(Comparator.comparing(FreeTimeForResponse::getBeginTime));
+		result.sort(Comparator.comparing(FreeTimeResponse::getBeginTime));
 				
 		Gson gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
 		String json = gsonBuilder.toJson(result.stream().limit(number).collect(Collectors.toList()));

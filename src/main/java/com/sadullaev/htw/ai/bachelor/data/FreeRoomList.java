@@ -1,4 +1,4 @@
-package com.sadullaev.htw.ai.bachelor.model;
+package com.sadullaev.htw.ai.bachelor.data;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.apache.spark.sql.Row;
 
-public class RoomFreeInfo implements Serializable {
+public class FreeRoomList implements Serializable {
 	
 	/**
 	 * 
@@ -23,16 +23,16 @@ public class RoomFreeInfo implements Serializable {
 	
 	transient DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
-	public RoomFreeInfo(Date date, List<Room> rooms) {
+	public FreeRoomList(Date date, List<Room> rooms) {
 		this.date = date;
 		this.rooms = rooms;
 	}
 	
-	public RoomFreeInfo() {
+	public FreeRoomList() {
 		
 	}
 
-	public RoomFreeInfo(String date) {
+	public FreeRoomList(String date) {
 		try {
 			this.date=new Date(dateFormat.parse(date).getTime());
 		} catch (ParseException e) {

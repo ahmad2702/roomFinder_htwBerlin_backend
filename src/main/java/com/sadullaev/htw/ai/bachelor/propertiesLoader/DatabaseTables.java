@@ -11,6 +11,10 @@ public class DatabaseTables {
     private static String dbName;
 	private static String allEvents;
 	
+	public DatabaseTables() {
+		load();
+	}
+	
 	public static void load() {
 		
 		try {

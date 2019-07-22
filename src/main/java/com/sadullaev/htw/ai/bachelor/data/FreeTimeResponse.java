@@ -1,9 +1,9 @@
-package com.sadullaev.htw.ai.bachelor.model;
+package com.sadullaev.htw.ai.bachelor.data;
 
 import java.sql.Date;
 import java.sql.Timestamp;
 
-public class FreeTimeForResponse {
+public class FreeTimeResponse {
 	
 	private Date date;
 	private String roomName;
@@ -11,7 +11,7 @@ public class FreeTimeForResponse {
 	private Timestamp endTime;
 	private long time;
 	
-	public FreeTimeForResponse(Date date, String roomName, Timestamp beginTime, Timestamp endTime, long time) {
+	public FreeTimeResponse(Date date, String roomName, Timestamp beginTime, Timestamp endTime, long time) {
 		this.date = date;
 		this.roomName = roomName;
 		this.beginTime = beginTime;

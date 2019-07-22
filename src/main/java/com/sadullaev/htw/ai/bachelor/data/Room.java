@@ -1,4 +1,4 @@
-package com.sadullaev.htw.ai.bachelor.model;
+package com.sadullaev.htw.ai.bachelor.data;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;

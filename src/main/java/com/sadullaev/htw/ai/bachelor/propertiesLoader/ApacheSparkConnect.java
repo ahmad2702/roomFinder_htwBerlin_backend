@@ -12,6 +12,10 @@ public class ApacheSparkConnect {
     private static String master;
     private static String executorMemory;
     
+    public ApacheSparkConnect() {
+    	load();
+    }
+    
     public static void load() {
     	
     	try {
