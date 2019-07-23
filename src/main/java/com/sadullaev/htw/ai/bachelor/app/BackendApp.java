@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.ApacheSparkConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseConnect;
 import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseTables;
+import com.sadullaev.htw.ai.bachelor.propertiesLoader.RestConfiguration;
 import com.sadullaev.htw.ai.bachelor.storage.EventManager;
 
 
@@ -22,13 +23,15 @@ public class BackendApp
     public static void main( String[] args )
     {
     	System.out.println("REST-API start..");
-    	port(7777);
-    	
+    	    	
     	// load propterties
     	new ApacheSparkConnect();
     	new DatabaseConnect();
     	new DatabaseTables();
+    	new RestConfiguration();
     	
+    	// Set Port
+    	port(RestConfiguration.getPort());
     	
     	
     	System.out.println("Apache Spark start..");
