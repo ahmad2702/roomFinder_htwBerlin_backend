@@ -38,16 +38,13 @@ public class BackendApp
     	EventManager.setupAndLoad();
         EventManager eventManager = new EventManager();
         eventManager.extractRoomsAtUniversity();
-       
-        
-        System.out.println("Started!");
         
         
         // For status check
     	get("/status", (request, response)->{
     		response.type("text/plain");
     		response.status(200);
-    		return "OK";
+    		return "REST-API is working!";
     	});
     	
     	
@@ -169,7 +166,7 @@ public class BackendApp
         
         
         
-        
+        System.out.println("REST-API ist started.");
         
         
     	
