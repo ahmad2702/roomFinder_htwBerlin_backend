@@ -77,7 +77,18 @@ public class EventManager implements EventManagerInterface{
 
 	
 	public List<String> getAll() {
-		JavaRDD<String> jsonRDD = dataFrame.toJSON().toJavaRDD();      
+		Column dateColumn = new Column("date");
+		Column beginColumn = new Column("begin");
+		Column endColumn = new Column("end");
+		Column titleColumn = new Column("name");
+		Column lsfIdColumn = new Column("lsf_id");
+		Column roomColumn = new Column("room");
+		Column lecturerColumn = new Column("lecturer");
+		
+		JavaRDD<String> jsonRDD = dataFrame.select(dateColumn, beginColumn, endColumn, 
+				titleColumn, lsfIdColumn, roomColumn, lecturerColumn).
+				toJSON().toJavaRDD();      
+		
 		List<String> mylist = jsonRDD.collect();   
 		return mylist;
 	}

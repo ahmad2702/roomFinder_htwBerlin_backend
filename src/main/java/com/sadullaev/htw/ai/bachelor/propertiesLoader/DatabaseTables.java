@@ -39,4 +39,8 @@ public class DatabaseTables {
 		return allEvents;
 	}
 
+	public static void setAllEvents(String allEvents) {
+		DatabaseTables.allEvents = allEvents;
+	}
+
 }
