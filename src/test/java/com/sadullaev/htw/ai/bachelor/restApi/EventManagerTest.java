@@ -160,5 +160,17 @@ public class EventManagerTest {
 		assertTrue(responsedJson.equals(erwartetJson));
 	}
 	
+	@Test
+	public void getAllLimitedTest() {
+		String erwartetJson = "[{\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 17:00:00.0\",\"end\":\""
+				+ "2019-07-01 18:30:00.0\",\"name\":\"English1\",\"lsf_id\":5.0,\"room\":\"123\",\"lecturer\":\""
+				+ "Prof.Dr.Test5\"}, {\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 09:45:00.0\",\"end\":\""
+				+ "2019-07-01 11:15:00.0\",\"name\":\"Mathe2\",\"lsf_id\":2.0,\"room\":\"345\",\"lecturer\":\"Prof.Dr.Test2\"}]";
+		
+		List<String> all = eventManager.getAll(2);
+		String responsedJson = all.toString();
+		
+		assertTrue(responsedJson.equals(erwartetJson));
+	}
 	
 }
