@@ -229,5 +229,33 @@ public class EventManagerTest {
 		assertTrue(freeRoomInfo.equals(erwartet));
 	}
 	
+	@Test
+	public void greeFreeRoomsTest() throws ParseException {
+		String erwartetJson = "[{\"date\":\"2019-07-01 00:00\",\"roomName\":\"123\",\"beginTime\":\""
+				+ "2019-07-01 07:00\",\"endTime\":\"2019-07-01 17:00\",\"time\":600},{\"date\":\"2019-07-01 "
+				+ "00:00\",\"roomName\":\"345\",\"beginTime\":\"2019-07-01 07:00\",\"endTime\":\"2019-07-01 09:45\",\""
+				+ "time\":165},{\"date\":\"2019-07-01 00:00\",\"roomName\":\"456\",\"beginTime\":\"2019-07-01 "
+				+ "07:00\",\"endTime\":\"2019-07-01 12:15\",\"time\":315},{\"date\":\"2019-07-01 00:00\",\""
+				+ "roomName\":\"567\",\"beginTime\":\"2019-07-01 07:00\",\"endTime\":\"2019-07-01 14:00\",\"time\":"
+				+ "420},{\"date\":\"2019-07-01 00:00\",\"roomName\":\"624\",\"beginTime\":\"2019-07-01 07:00\",\""
+				+ "endTime\":\"2019-07-01 08:00\",\"time\":60},{\"date\":\"2019-07-01 00:00\",\"roomName\":\"624\",\""
+				+ "beginTime\":\"2019-07-01 09:30\",\"endTime\":\"2019-07-01 22:00\",\"time\":750},{\"date\":\""
+				+ "2019-07-01 00:00\",\"roomName\":\"345\",\"beginTime\":\"2019-07-01 11:15\",\"endTime\":\"2019-07-01 "
+				+ "22:00\",\"time\":645},{\"date\":\"2019-07-01 00:00\",\"roomName\":\"456\",\"beginTime\":\"2019-07-01 "
+				+ "13:45\",\"endTime\":\"2019-07-01 22:00\",\"time\":495},{\"date\":\"2019-07-01 00:00\",\"roomName\":\""
+				+ "567\",\"beginTime\":\"2019-07-01 15:30\",\"endTime\":\"2019-07-01 22:00\",\"time\":390},{\"date\":\""
+				+ "2019-07-01 00:00\",\"roomName\":\"123\",\"beginTime\":\"2019-07-01 18:30\",\"endTime\":\"2019-07-01 "
+				+ "22:00\",\"time\":210}]";
+		
+		String dateAsString = "2019-07-01";
+		Date dateAsDate = new Date(formatSQL.parse(dateAsString).getTime());
+		eventManager.extractRoomsAtUniversity();
+		
+		String responsedJson = eventManager.getFreeRooms(dateAsDate, dateAsString, "", 15, 30);
+		
+		eventManager.setRooms(null);
+		assertTrue(responsedJson.equals(erwartetJson));
+	}
+	
 	
 }
