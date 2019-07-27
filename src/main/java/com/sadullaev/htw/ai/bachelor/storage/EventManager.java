@@ -244,6 +244,16 @@ public class EventManager implements EventManagerInterface{
 	public static void setRooms(Row[] rooms) {
 		EventManager.rooms = rooms;
 	}
+
+
+	public static List<FreeRoomList> getFreeRoomList() {
+		return freeRoomList;
+	}
+
+
+	public static void setFreeRoomList(List<FreeRoomList> freeRoomList) {
+		EventManager.freeRoomList = freeRoomList;
+	}
 	
 	
 	

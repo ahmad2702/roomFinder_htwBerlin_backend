@@ -31,6 +31,7 @@ public class EventManagerTest {
 	
 	private static SessionFactory sessionFactory;
 	private static DateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+	private static DateFormat formatSQL = new SimpleDateFormat("yyyy-MM-dd");
 	private static List<TestEvent> eventList;
 	
 	private static EventManager eventManager;
@@ -198,8 +199,35 @@ public class EventManagerTest {
 		
 		eventManager.extractRoomsAtUniversity();
 		String rooms = Arrays.toString(eventManager.getRooms());
-
+		
+		eventManager.setRooms(null);
 		assertTrue(rooms.equals(erwartet));
 	}
+	
+	@Test
+	public void loadRoomsForDayTest() throws ParseException {
+		String erwartet = "[RoomFreeInfo [date=2019-07-01, rooms=[Room [room=123, freeTimes=[["
+				+ "begin=2019-07-01 07:00:00.0, end=2019-07-01 17:00:00.0, time=600], [begin=2019-07-01 "
+				+ "18:30:00.0, end=2019-07-01 22:00:00.0, time=210]]], Room [room=345, freeTimes=[["
+				+ "begin=2019-07-01 07:00:00.0, end=2019-07-01 09:45:00.0, time=165], [begin=2019-07-01 "
+				+ "11:15:00.0, end=2019-07-01 22:00:00.0, time=645]]], Room [room=456, freeTimes=[["
+				+ "begin=2019-07-01 07:00:00.0, end=2019-07-01 12:15:00.0, time=315], [begin=2019-07-01 "
+				+ "13:45:00.0, end=2019-07-01 22:00:00.0, time=495]]], Room [room=567, freeTimes=[["
+				+ "begin=2019-07-01 07:00:00.0, end=2019-07-01 14:00:00.0, time=420], [begin=2019-07-01 "
+				+ "15:30:00.0, end=2019-07-01 22:00:00.0, time=390]]], Room [room=624, freeTimes=[["
+				+ "begin=2019-07-01 07:00:00.0, end=2019-07-01 08:00:00.0, time=60], [begin=2019-07-01 "
+				+ "09:30:00.0, end=2019-07-01 22:00:00.0, time=750]]]]]]";
+		
+		String dateAsString = "2019-07-01";
+		Date dateAsDate = new Date(formatSQL.parse(dateAsString).getTime());
+		eventManager.extractRoomsAtUniversity();
+		eventManager.loadNewByDate(dateAsDate, dateAsString);
+
+		String freeRoomInfo = eventManager.getFreeRoomList().toString();
+		
+		eventManager.setRooms(null);
+		assertTrue(freeRoomInfo.equals(erwartet));
+	}
+	
 	
 }
