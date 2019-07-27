@@ -173,4 +173,21 @@ public class EventManagerTest {
 		assertTrue(responsedJson.equals(erwartetJson));
 	}
 	
+	@Test
+	public void findEventTest() {
+		String erwartetJson = "[{\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 09:45:00.0\",\""
+				+ "end\":\"2019-07-01 11:15:00.0\",\"name\":\"Mathe2\",\"lsf_id\":2.0,\"room\":\"345\",\""
+				+ "lecturer\":\"Prof.Dr.Test2\"}, {\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 12:15:00.0\",\""
+				+ "end\":\"2019-07-01 13:45:00.0\",\"name\":\"Mathe3\",\"lsf_id\":3.0,\"room\":\"456\",\""
+				+ "lecturer\":\"Prof.Dr.Test3\"}, {\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 14:00:00.0\",\""
+				+ "end\":\"2019-07-01 15:30:00.0\",\"name\":\"Mathe4\",\"lsf_id\":4.0,\"room\":\"567\",\"lecturer\":\""
+				+ "Prof.Dr.Test4\"}, {\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 08:00:00.0\",\"end\":\""
+				+ "2019-07-01 09:30:00.0\",\"name\":\"Mathe1\",\"lsf_id\":1.0,\"room\":\"624\",\"lecturer\":\"Prof.Dr.Test1\"}]";
+		
+		List<String> all = eventManager.getEventsFiltered("Mathe", "2019-07-01", "", 15);
+		String responsedJson = all.toString();
+
+		assertTrue(responsedJson.equals(erwartetJson));
+	}
+	
 }
