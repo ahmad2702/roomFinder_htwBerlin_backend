@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -27,6 +26,7 @@ import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseTables;
 import com.sadullaev.htw.ai.bachelor.restApi.testModel.TestEvent;
 import com.sadullaev.htw.ai.bachelor.storage.EventManager;
 
+@SuppressWarnings("static-access")
 public class EventManagerTest {
 	
 	private static SessionFactory sessionFactory;
