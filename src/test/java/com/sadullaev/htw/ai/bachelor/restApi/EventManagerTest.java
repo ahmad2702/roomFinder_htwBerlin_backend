@@ -8,7 +8,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -188,6 +190,16 @@ public class EventManagerTest {
 		String responsedJson = all.toString();
 
 		assertTrue(responsedJson.equals(erwartetJson));
+	}
+	
+	@Test
+	public void extractRoomsTest() {
+		String erwartet = "[[567], [456], [345], [123], [624]]";
+		
+		eventManager.extractRoomsAtUniversity();
+		String rooms = Arrays.toString(eventManager.getRooms());
+
+		assertTrue(rooms.equals(erwartet));
 	}
 	
 }

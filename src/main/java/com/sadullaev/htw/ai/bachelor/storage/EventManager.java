@@ -234,10 +234,20 @@ public class EventManager implements EventManagerInterface{
 		
 		return json;
 	}
-	
 
-	
 
+	public static Row[] getRooms() {
+		return rooms;
+	}
+
+
+	public static void setRooms(Row[] rooms) {
+		EventManager.rooms = rooms;
+	}
+	
+	
+	
+	
 	
 	
 	
