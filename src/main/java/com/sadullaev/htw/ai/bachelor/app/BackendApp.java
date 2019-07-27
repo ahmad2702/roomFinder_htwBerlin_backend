@@ -30,6 +30,10 @@ public class BackendApp
     	new DatabaseTables();
     	new RestConfiguration();
     	
+    	run();
+    }
+    
+    public static void run() {
     	// Set Port
     	port(RestConfiguration.getPort());
     	
@@ -167,8 +171,6 @@ public class BackendApp
         
         
         System.out.println("REST-API ist started.");
-        
-        
-    	
     }
+    
 }
