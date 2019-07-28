@@ -1,4 +1,4 @@
-package com.sadullaev.htw.ai.bachelor.restApi;
+package com.sadullaev.htw.ai.bachelor.restApi.tests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,7 +34,7 @@ import com.sadullaev.htw.ai.bachelor.restApi.testModel.TestEvent;
 import spark.servlet.SparkApplication;
 
 @SuppressWarnings("static-access")
-public class RestApiTest {
+public class TestRestAPI {
 
 	private static SessionFactory sessionFactory;
 	private static DateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");

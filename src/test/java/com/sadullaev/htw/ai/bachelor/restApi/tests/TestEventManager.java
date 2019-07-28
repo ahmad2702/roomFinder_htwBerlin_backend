@@ -1,4 +1,4 @@
-package com.sadullaev.htw.ai.bachelor.restApi;
+package com.sadullaev.htw.ai.bachelor.restApi.tests;
 
 import static org.junit.Assert.assertTrue;
 
@@ -27,7 +27,7 @@ import com.sadullaev.htw.ai.bachelor.restApi.testModel.TestEvent;
 import com.sadullaev.htw.ai.bachelor.storage.EventManager;
 
 @SuppressWarnings("static-access")
-public class EventManagerTest {
+public class TestEventManager {
 	
 	private static SessionFactory sessionFactory;
 	private static DateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
