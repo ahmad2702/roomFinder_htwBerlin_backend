@@ -43,7 +43,8 @@ public class EventManager implements EventManagerInterface{
 		SparkConf sparkConf = new SparkConf().setAppName(ApacheSparkConnect.getAppName())
                 .setMaster(ApacheSparkConnect.getMaster())
                 .set("spark.executor.memory", ApacheSparkConnect.getExecutorMemory())
-                .set("spark.rpc.askTimeout", "800s");
+                .set("spark.rpc.askTimeout", "800s")
+                .set("spark.driver.allowMultipleContexts", "true");
 		sc = new JavaSparkContext(sparkConf);
 		sc.setLogLevel("ERROR");
 		sqlContext = new SQLContext(sc);

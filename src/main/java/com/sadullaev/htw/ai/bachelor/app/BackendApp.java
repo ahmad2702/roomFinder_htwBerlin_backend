@@ -60,13 +60,30 @@ public class BackendApp
     	//----------------------------------------------------------------------------------------------
     	// For Test
     	get("/events/all", (request, response)->{
+    		System.out.println("-----------------");
+    		System.out.println("-Get all event (full)-");
+    		
+    		DateFormat dF = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    		java.util.Date cD = new java.util.Date();
+    		System.out.println("* " + dF.format(cD));
+    		
     		response.type("application/json");
+    		System.out.println("-----------------");
+    		
     		return eventManager.getAll();
     	});
     	
     	get("/events/number/:number", (request, response)->{
+    		System.out.println("-----------------");
+    		System.out.println("-Get all event (limited)-");
+    		
+    		DateFormat dF = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    		java.util.Date cD = new java.util.Date();
+    		System.out.println("* " + dF.format(cD));
+    		
     		response.type("application/json");    		
     		int number = Integer.parseInt(request.params(":number"));
+    		System.out.println("-----------------");
     		
     		return eventManager.getAll(number);
     	});
@@ -91,9 +108,6 @@ public class BackendApp
     		DateFormat dF = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     		java.util.Date cD = new java.util.Date();
     		System.out.println("* " + dF.format(cD));
-    		
-    		String ip = request.ip();
-    		System.out.println("* " + ip);
     		
     		String title = request.headers("title");
     		System.out.println("Titel: " + title);
@@ -131,9 +145,6 @@ public class BackendApp
     		DateFormat dF = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     		java.util.Date cD = new java.util.Date();
     		System.out.println("* " + dF.format(cD));
-    		
-    		String ip = request.ip();
-    		System.out.println("* " + ip);
     		
     		String date = request.headers("date");
     		System.out.println("Datum: " + date);
