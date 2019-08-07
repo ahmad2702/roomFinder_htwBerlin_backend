@@ -2,6 +2,10 @@ package com.sadullaev.htw.ai.bachelor.restApi.tests;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -10,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -38,9 +43,28 @@ public class TestEventManager {
 	
 	
 	@BeforeClass
-	public static void initTest() throws ParseException {
+	public static void initTest() throws ParseException, IOException {
+		File dbFile = new File("src/main/resources/db_connect.properties");
+		InputStream inputStream = new FileInputStream(dbFile);
+		Properties dbProperties = new Properties();
+		dbProperties.load(inputStream);
+		
+		File tableFile = new File("src/main/resources/db_tables.properties");
+		inputStream = new FileInputStream(tableFile);
+		Properties tableProperties = new Properties();
+		tableProperties.load(inputStream);
+		
+		File hibernateFile = new File("src/test/resources/hibernate.properties");
+		inputStream = new FileInputStream(hibernateFile);
+		Properties hibernateProperties = new Properties();
+		hibernateProperties.load(inputStream);
+		hibernateProperties.setProperty("hibernate.connection.url", "jdbc:mysql://"+dbProperties.getProperty("host")+":"+dbProperties.getProperty("port")+
+				"/"+tableProperties.getProperty("db.name"));
+		hibernateProperties.setProperty("hibernate.connection.username", dbProperties.getProperty("login"));
+		hibernateProperties.setProperty("hibernate.connection.password", dbProperties.getProperty("password"));
+		
 		// Hibernate config
-		Configuration configuration = new Configuration();
+		Configuration configuration = new Configuration().addProperties(hibernateProperties);
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
         configuration.addAnnotatedClass(TestEvent.class);
         sessionFactory = configuration.buildSessionFactory(serviceRegistry);		
