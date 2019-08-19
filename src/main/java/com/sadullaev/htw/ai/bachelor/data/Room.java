@@ -11,24 +11,44 @@ import org.apache.spark.sql.Row;
 
 public class Room {
 	
+	/**
+	 * Instance variables
+	 */
+	
 	private String room;
 	private List<Time> freeTimes = new ArrayList<Time>();
-	
 	transient DateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
+	/**
+	 * Constructor
+	 * @param room
+	 * @param freeTimes
+	 */
 	public Room(String room, List<Time> freeTimes) {
 		this.room = room;
 		this.freeTimes = freeTimes;
 	}
 	
+	/**
+	 * Constructor
+	 */
 	public Room() {
 		
 	}
 
+	/**
+	 * Constructor
+	 * @param room
+	 */
 	public Room(String room) {
 		this.room = room;
 	}
 	
+	/**
+	 * Extracting of free rooms with save function
+	 * @param actualEventsInRoom
+	 * @throws ParseException
+	 */
 	public void extractAndSaveFreeTime(Iterable<Row> actualEventsInRoom) throws ParseException {
 		List<Time> actualEvents = new ArrayList<Time>();
 		
@@ -68,32 +88,52 @@ public class Room {
 		}
 	}
 	
+	/**
+	 * Function for adding of time
+	 * @param event
+	 */
 	public void add(Time event) {
 		freeTimes.add(event);
 	}
 
+	/**
+	 * Function for room
+	 * @return room
+	 */
 	public String getRoom() {
 		return room;
 	}
 
+	/**
+	 * Setter function for room
+	 * @param room
+	 */
 	public void setRoom(String room) {
 		this.room = room;
 	}
 
+	/**
+	 * Getter function for free times
+	 * @return free times
+	 */
 	public List<Time> getFreeTimes() {
 		return freeTimes;
 	}
 
+	/**
+	 * Setter function for free times
+	 * @param freeTimes
+	 */
 	public void setFreeTimes(List<Time> freeTimes) {
 		this.freeTimes = freeTimes;
 	}
 
+	/**
+	 * Overrided function for TOSTRING for best performance
+	 */
 	@Override
 	public String toString() {
 		return "Room [room=" + room + ", freeTimes=" + freeTimes + "]";
 	}
-	
-	
-	
-	
+
 }

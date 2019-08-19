@@ -6,16 +6,24 @@ import java.util.Properties;
 
 public class RestConfiguration {
 	
-	static Properties property = new Properties();
+	/*
+	 * Class variables
+	 */
 	
+	static Properties property = new Properties();
 	private static int port;
 	
+	/**
+     * Constructor
+     */
 	public RestConfiguration() {
 		load();
 	}
 	
+	/**
+     * Function for properties load
+     */
 	public static void load() {
-		
 		try {
             InputStream input = DatabaseConnect.class.getClassLoader().getResourceAsStream("rest.properties");
             property.load(input);
@@ -25,13 +33,14 @@ public class RestConfiguration {
         } catch (IOException e) {
             System.err.println("Properties fuer RestConfiguration nicht gefunden!");
         }
-
 	}
 
+	/**
+     * Getter function for port
+     * @return port
+     */
 	public static int getPort() {
 		return port;
 	}
-	
-	
-	
+
 }

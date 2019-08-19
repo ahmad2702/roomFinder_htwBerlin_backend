@@ -15,11 +15,17 @@ import com.sadullaev.htw.ai.bachelor.propertiesLoader.RestConfiguration;
 import com.sadullaev.htw.ai.bachelor.storage.EventManager;
 
 
-public class BackendApp 
-{
+public class BackendApp {
 	
+	/**
+	 * Date format for operations
+	 */
 	transient static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
+	/**
+	 * Application launch
+	 * @param args
+	 */
     public static void main( String[] args )
     {
     	System.out.println("REST-API start..");
@@ -33,8 +39,12 @@ public class BackendApp
     	run();
     }
     
+    /**
+     * running all rest apis endpoints
+     */
     public static void run() {
-    	// Set Port
+    	
+    	// port setting
     	port(RestConfiguration.getPort());
     	
     	
@@ -50,15 +60,12 @@ public class BackendApp
     		response.status(200);
     		return "REST-API is working!";
     	});
+
     	
     	
     	
-    	
-    	
-    	
-    	
-    	//----------------------------------------------------------------------------------------------
-    	// For Test
+    	//----For TEST-------------------------------------------------------------------------------
+    	// Get all events
     	get("/events/all", (request, response)->{
     		System.out.println("-----------------");
     		System.out.println("-Get all event (full)-");
@@ -73,6 +80,7 @@ public class BackendApp
     		return eventManager.getAll();
     	});
     	
+    	// Get all events (limited)
     	get("/events/number/:number", (request, response)->{
     		System.out.println("-----------------");
     		System.out.println("-Get all event (limited)-");
@@ -102,11 +110,7 @@ public class BackendApp
     	
     	
     	
-    	
-    	
-    	
-    	
-    	
+
     	
     	//----------------------------------------------------------------------------------------------
     	//Event Search
@@ -204,7 +208,7 @@ public class BackendApp
     			return "Your request was incorrect.";
 			}
     	});
-      //----------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------
         
         
         

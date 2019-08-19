@@ -28,17 +28,21 @@ import com.sadullaev.htw.ai.bachelor.propertiesLoader.DatabaseTables;
 
 public class EventManager implements EventManagerInterface{
 	
-	static Row[] rooms;
+	/*
+	 * Class variables
+	 */
 	
+	static Row[] rooms;
 	static List<FreeRoomList> freeRoomList = new ArrayList<FreeRoomList>();
 	static FreeRoomList day;
-	
 	private static DataFrame dataFrame = null;
 	private static JavaSparkContext sc;
 	private static SQLContext sqlContext;
-	
 	final static DateTimeFormatter dateTimeFormatterSql = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
+	/**
+	 * Setup Apache Spark configuration
+	 */
 	public static void setupAndLoad() {
 		SparkConf sparkConf = new SparkConf().setAppName(ApacheSparkConnect.getAppName())
                 .setMaster(ApacheSparkConnect.getMaster())
@@ -76,7 +80,10 @@ public class EventManager implements EventManagerInterface{
         	    .load();
 	}
 
-	
+	/**
+	 * Getter for all events from db (full)
+	 * @return event list
+	 */
 	public List<String> getAll() {
 		Column dateColumn = new Column("date");
 		Column beginColumn = new Column("begin");
@@ -94,6 +101,11 @@ public class EventManager implements EventManagerInterface{
 		return mylist;
 	}
 	
+	/**
+	 * Getter for all events from db
+	 * @param number
+	 * @return event list
+	 */
 	public List<String> getAll(int number) {
 		Column dateColumn = new Column("date");
 		Column beginColumn = new Column("begin");
@@ -110,21 +122,19 @@ public class EventManager implements EventManagerInterface{
 		List<String> mylist = jsonRDD.collect().stream().limit(number).collect(Collectors.toList());   
 		return mylist;
 	}
+
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * Find event room into db
+	 * @param title
+	 * @param date
+	 * @param lecturer
+	 * @param number
+	 * @return list of rooms
+	 */
+	@Override
 	public List<String> getEventsFiltered(String title, String date, String lecturer, int number) {
-		
 		Column dateColumn = new Column("date");
 		Column beginColumn = new Column("begin");
 		Column endColumn = new Column("end");
@@ -159,13 +169,19 @@ public class EventManager implements EventManagerInterface{
 	
 	
 	
-	
+	/**
+	 * Extracting all rooms from db
+	 */
 	public void extractRoomsAtUniversity() {
 		Column roomColumn = new Column("room");
 		rooms = dataFrame.select(roomColumn).distinct().collect();
 	}
 	
-
+	/**
+	 * Loading rooms data by date
+	 * @param dateAsDate
+	 * @param dateAsString
+	 */
 	public synchronized void loadNewByDate(Date dateAsDate, String dateAsString) {
 		
 		if(freeRoomList.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
@@ -177,7 +193,7 @@ public class EventManager implements EventManagerInterface{
 		Column beginColumn = new Column("begin");
 		Column endColumn = new Column("end");
 		
-	//start
+		//start
 		String datum = dateAsString;
 		
 		DataFrame dataFrameResult = dataFrame
@@ -197,16 +213,25 @@ public class EventManager implements EventManagerInterface{
 		day.sortRoom();
 		
 		freeRoomList.add(day);
-	//end
+		//end
 	}
 
+	/**
+	 * Find free room into db
+	 * @param dateAsDate
+	 * @param dateAsString
+	 * @param room
+	 * @param time
+	 * @param number
+	 * @return list of rooms
+	 */
+	@Override
 	public String getFreeRooms(Date dateAsDate, String dateAsString, String room, int time, int number) {
 		List<FreeTimeResponse> result = null;
 		
 		if(!freeRoomList.stream().anyMatch(str -> str.getDate().getTime()==dateAsDate.getTime())) {
 			loadNewByDate(dateAsDate,dateAsString);
 		}
-		
 		
 		FreeRoomList roomFreeInfo = freeRoomList.stream().filter(str -> str.getDate().getTime()==dateAsDate.getTime()).findFirst().orElse(null);
 		List<Room> allRooms = roomFreeInfo.getRooms();
@@ -215,11 +240,8 @@ public class EventManager implements EventManagerInterface{
 			allRooms = allRooms.stream().filter(x-> x.getRoom().contains(room)).collect(Collectors.toList());
 		}
 
-
 		result = allRooms.stream().flatMap(x -> x.getFreeTimes().stream().map(zeit -> new FreeTimeResponse(dateAsDate, x.getRoom(), zeit.getBegin(), zeit.getEnd(), zeit.getTime()))).collect(Collectors.toList());;
 
-		
-		
 		int timeAsIntAndInMiliseconds = time * 60000;
 		if(time != 0) {
 			result = result.stream().filter(x-> x.getTime()>=time && 
@@ -236,31 +258,36 @@ public class EventManager implements EventManagerInterface{
 		return json;
 	}
 
-
+	/**
+	 * Getter function for rooms
+	 * @return rooms
+	 */
 	public static Row[] getRooms() {
 		return rooms;
 	}
 
-
+	/**
+	 * Setter function for rooms
+	 * @param rooms
+	 */
 	public static void setRooms(Row[] rooms) {
 		EventManager.rooms = rooms;
 	}
 
-
+	/**
+	 * Getter function room list
+	 * @return room list
+	 */
 	public static List<FreeRoomList> getFreeRoomList() {
 		return freeRoomList;
 	}
 
-
+	/**
+	 * Setter function for room list
+	 * @param freeRoomList
+	 */
 	public static void setFreeRoomList(List<FreeRoomList> freeRoomList) {
 		EventManager.freeRoomList = freeRoomList;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
 }
