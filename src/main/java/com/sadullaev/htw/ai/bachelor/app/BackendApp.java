@@ -82,8 +82,19 @@ public class BackendApp
     		System.out.println("* " + dF.format(cD));
     		
     		response.type("application/json");    		
-    		int number = Integer.parseInt(request.params(":number"));
+    		int number = 0;
+    		try{
+    			number = Integer.parseInt(request.params(":number"));
+    		}catch (NumberFormatException e) {
+    			response.status(400);
+				return "Your request was incorrect.";
+			}
     		System.out.println("-----------------");
+    		
+    		if(number<0) {
+    			response.status(400);
+    			return "Your request was incorrect.";
+    		}
     		
     		return eventManager.getAll(number);
     	});
@@ -109,22 +120,28 @@ public class BackendApp
     		java.util.Date cD = new java.util.Date();
     		System.out.println("* " + dF.format(cD));
     		
-    		String title = request.headers("title");
-    		System.out.println("Titel: " + title);
-    		
-    		
-    		String date = request.headers("date");
-    		System.out.println("Datum: " + date);
-    		
-    		String lecturer = request.headers("lecturer");
-    		System.out.println("Dozent: " + lecturer);
-    		
-    		int number = Integer.parseInt(request.headers("number"));
-    		System.out.println("Anzahl: " + number);
-    		
-    		System.out.println("-----------------");
-    		
-    		return eventManager.getEventsFiltered(title, date, lecturer, number);
+    		try {    		
+	    		String title = request.headers("title");
+	    		System.out.println("Titel: " + title);
+	    		
+	    		
+	    		String date = request.headers("date");
+	    		System.out.println("Datum: " + date);
+	    		
+	    		String lecturer = request.headers("lecturer");
+	    		System.out.println("Dozent: " + lecturer);
+	    		
+	    		int number = Integer.parseInt(request.headers("number"));
+	    		System.out.println("Anzahl: " + number);
+	    		
+	    		System.out.println("-----------------");
+	    		
+	    		return eventManager.getEventsFiltered(title, date, lecturer, number);
+	    		
+    		}catch (Exception e) {
+    			response.status(400);
+    			return "Your request was incorrect.";
+			}
     	});
     	//----------------------------------------------------------------------------------------------
 
@@ -146,36 +163,46 @@ public class BackendApp
     		java.util.Date cD = new java.util.Date();
     		System.out.println("* " + dF.format(cD));
     		
-    		String date = request.headers("date");
-    		System.out.println("Datum: " + date);
-    		
-    		String room = null;
-    		if(request.headers("room") != null && !request.headers("room").equals("")) {
-    			room = new String(request.headers("room").getBytes("ISO-8859-1"), "UTF-8");
-    		}
-    		System.out.println("Raum: " + room);
-    		
-    		int time = 0;
-    		if(request.headers("time") != null && !request.headers("time").equals("")) {
-    			time = Integer.parseInt(request.headers("time"));
-    		}
-    		System.out.println("Dauer: " + time);
-    		
-            int number = Integer.parseInt(request.headers("number"));
-            System.out.println("Anzahl: " + number);
-            
-            System.out.println("-----------------");
-    		
-            
-            
-            Date dateFromRequest = null;
-            try {
-            	dateFromRequest=new Date(dateFormat.parse(date).getTime());
-    		} catch (ParseException e) {
-    			System.out.println("Date problem!");
-    		} 
-            
-    		return eventManager.getFreeRooms(dateFromRequest, date, room, time, number);
+    		try {
+	    		String date = request.headers("date");
+	    		System.out.println("Datum: " + date);
+	    		
+	    		String room = null;
+	    		if(request.headers("room") != null && !request.headers("room").equals("")) {
+	    			room = request.headers("room");
+	    			
+	    			if(room.contains("Ã¤")) {
+	    				room = new String(room.getBytes("ISO-8859-1"), "UTF-8");
+	    			}
+	    		}
+	    		System.out.println("Raum: " + room);
+	    		
+	    		int time = 0;
+	    		if(request.headers("time") != null && !request.headers("time").equals("")) {
+	    			time = Integer.parseInt(request.headers("time"));
+	    		}
+	    		System.out.println("Dauer: " + time);
+	    		
+	            int number = Integer.parseInt(request.headers("number"));
+	            System.out.println("Anzahl: " + number);
+	            
+	            System.out.println("-----------------");
+	    		
+	            
+	            
+	            Date dateFromRequest = null;
+	            try {
+	            	dateFromRequest=new Date(dateFormat.parse(date).getTime());
+	    		} catch (ParseException e) {
+	    			System.out.println("Date problem!");
+	    		} 
+	            
+	    		return eventManager.getFreeRooms(dateFromRequest, date, room, time, number);
+	    		
+    		}catch (Exception e) {
+    			response.status(400);
+    			return "Your request was incorrect.";
+			}
     	});
       //----------------------------------------------------------------------------------------------
         
