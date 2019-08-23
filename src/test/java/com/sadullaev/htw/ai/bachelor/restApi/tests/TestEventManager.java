@@ -63,14 +63,17 @@ public class TestEventManager {
 		hibernateProperties.setProperty("hibernate.connection.username", dbProperties.getProperty("login"));
 		hibernateProperties.setProperty("hibernate.connection.password", dbProperties.getProperty("password"));
 		
-		// Hibernate config
-		Configuration configuration = new Configuration().addProperties(hibernateProperties);
-        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-        configuration.addAnnotatedClass(TestEvent.class);
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);		
-		
-        
-        
+		try {
+			// Hibernate config
+			Configuration configuration = new Configuration().addProperties(hibernateProperties);
+	        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+	        configuration.addAnnotatedClass(TestEvent.class);
+	        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+		}catch (Exception e) {
+			System.out.println("SessionFactory kann nicht initialisiert werden, "
+					+ "da die Datei hibernate.properties nicht vervollstaendigt ist.");
+		}
+
      // Test objects        
         eventList = new ArrayList<TestEvent>();
         
@@ -142,35 +145,49 @@ public class TestEventManager {
 		event5.setIsActual(1);
 		eventList.add(event5);
         
-		Session session = sessionFactory.openSession();  
-		for (TestEvent event: eventList) {
-			session.beginTransaction();
-			session.save(event);
-			session.getTransaction().commit();
+		try {
+			Session session = sessionFactory.openSession();  
+			for (TestEvent event: eventList) {
+				session.beginTransaction();
+				session.save(event);
+				session.getTransaction().commit();
+			}
+			session.close();
+		} catch (Exception e) {
+			System.out.println("SessionFactory war nicht initialisiert.");
 		}
-		session.close();
-        
-		
+
 		// Eventmanger config
     	new ApacheSparkConnect();
     	new DatabaseConnect();
     	new DatabaseTables().setAllEvents("events_test");
     	
-    	eventManager = new EventManager();
+    	try {
+			eventManager = new EventManager();
     	eventManager.setupAndLoad();
+		} catch (Exception e) {
+			System.out.println("Apache Spark funktioniert nicht, da db_connect.propeties falsch verfollstaendigt ist.");
+		}
+    	
 	}
 	
 	@AfterClass
 	public static void setUpAfter() {
-		Session session = sessionFactory.openSession();    
-		String deleteAllSqlQuery = "delete FROM com.sadullaev.htw.ai.bachelor.restApi.testModel.TestEvent";
-		session.beginTransaction();
-		session.createQuery(deleteAllSqlQuery).executeUpdate();
-		session.close();
+		try {
+			Session session = sessionFactory.openSession();    
+			String deleteAllSqlQuery = "delete FROM com.sadullaev.htw.ai.bachelor.restApi.testModel.TestEvent";
+			session.beginTransaction();
+			session.createQuery(deleteAllSqlQuery).executeUpdate();
+			session.close();
+		} catch (Exception e) {
+			// Session can't be closed.
+		}
 	}
 	
 	@Test
 	public void getAllTest() {
+		String responsedJson = null;
+		
 		String erwartetJson = "[{\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 17:00:00.0\",\"end\":\"2019-07-01 "
 				+ "18:30:00.0\",\"name\":\"English1\",\"lsf_id\":5.0,\"room\":\"123\",\"lecturer\":\"Prof.Dr.Test5\"}, {\""
 				+ "date\":\"2019-07-01\",\"begin\":\"2019-07-01 09:45:00.0\",\"end\":\"2019-07-01 11:15:00.0\",\"name\":\""
@@ -180,28 +197,39 @@ public class TestEventManager {
 				+ "14:00:00.0\",\"end\":\"2019-07-01 15:30:00.0\",\"name\":\"Mathe4\",\"lsf_id\":4.0,\"room\":\"567\",\""
 				+ "lecturer\":\"Prof.Dr.Test4\"}, {\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 08:00:00.0\",\"end\":\""
 				+ "2019-07-01 09:30:00.0\",\"name\":\"Mathe1\",\"lsf_id\":1.0,\"room\":\"624\",\"lecturer\":\"Prof.Dr.Test1\"}]";
-		
-		List<String> all = eventManager.getAll();
-		String responsedJson = all.toString();
-		
-		assertTrue(responsedJson.equals(erwartetJson));
+		try {
+			List<String> all = eventManager.getAll();
+			responsedJson = all.toString();
+		} catch (Exception e) {
+			System.out.println("Bitte pruefen, ob die Datei db_connect/db_tables.properties vervollstaendigt ist!");
+		}
+
+		assertTrue(responsedJson!=null && responsedJson.equals(erwartetJson));
 	}
 	
 	@Test
 	public void getAllLimitedTest() {
+		String responsedJson = null;
+		
 		String erwartetJson = "[{\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 17:00:00.0\",\"end\":\""
 				+ "2019-07-01 18:30:00.0\",\"name\":\"English1\",\"lsf_id\":5.0,\"room\":\"123\",\"lecturer\":\""
 				+ "Prof.Dr.Test5\"}, {\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 09:45:00.0\",\"end\":\""
 				+ "2019-07-01 11:15:00.0\",\"name\":\"Mathe2\",\"lsf_id\":2.0,\"room\":\"345\",\"lecturer\":\"Prof.Dr.Test2\"}]";
 		
-		List<String> all = eventManager.getAll(2);
-		String responsedJson = all.toString();
-		
-		assertTrue(responsedJson.equals(erwartetJson));
+		try {
+			List<String> all = eventManager.getAll(2);
+			responsedJson = all.toString();
+		} catch (Exception e) {
+			System.out.println("Bitte pruefen, ob die Datei db_connect/db_tables.properties vervollstaendigt ist!");
+		}
+
+		assertTrue(responsedJson!=null && responsedJson.equals(erwartetJson));
 	}
 	
 	@Test
 	public void findEventTest() {
+		String responsedJson = null;
+		
 		String erwartetJson = "[{\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 09:45:00.0\",\""
 				+ "end\":\"2019-07-01 11:15:00.0\",\"name\":\"Mathe2\",\"lsf_id\":2.0,\"room\":\"345\",\""
 				+ "lecturer\":\"Prof.Dr.Test2\"}, {\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 12:15:00.0\",\""
@@ -211,25 +239,37 @@ public class TestEventManager {
 				+ "Prof.Dr.Test4\"}, {\"date\":\"2019-07-01\",\"begin\":\"2019-07-01 08:00:00.0\",\"end\":\""
 				+ "2019-07-01 09:30:00.0\",\"name\":\"Mathe1\",\"lsf_id\":1.0,\"room\":\"624\",\"lecturer\":\"Prof.Dr.Test1\"}]";
 		
-		List<String> all = eventManager.getEventsFiltered("Mathe", "2019-07-01", "", 15);
-		String responsedJson = all.toString();
+		try {
+			List<String> all = eventManager.getEventsFiltered("Mathe", "2019-07-01", "", 15);
+			responsedJson = all.toString();
+		} catch (Exception e) {
+			System.out.println("Bitte pruefen, ob die Datei db_connect/db_tables.properties vervollstaendigt ist!");
+		}
 
-		assertTrue(responsedJson.equals(erwartetJson));
+		assertTrue(responsedJson!=null && responsedJson.equals(erwartetJson));
 	}
 	
 	@Test
 	public void extractRoomsTest() {
+		String rooms = null;
+		
 		String erwartet = "[[567], [456], [345], [123], [624]]";
 		
-		eventManager.extractRoomsAtUniversity();
-		String rooms = Arrays.toString(eventManager.getRooms());
-		
-		eventManager.setRooms(null);
-		assertTrue(rooms.equals(erwartet));
+		try {
+			eventManager.extractRoomsAtUniversity();
+			rooms = Arrays.toString(eventManager.getRooms());
+		} catch (Exception e) {
+			System.out.println("Bitte pruefen, ob die Datei db_connect/db_tables.properties vervollstaendigt ist!");
+		}
+
+		eventManager.setRooms(null); // for next tests necessary
+		assertTrue(rooms!=null && rooms.equals(erwartet));
 	}
 	
 	@Test
 	public void loadRoomsForDayTest() throws ParseException {
+		String freeRoomInfo = null;
+		
 		String erwartet = "[RoomFreeInfo [date=2019-07-01, rooms=[Room [room=123, freeTimes=[["
 				+ "begin=2019-07-01 07:00:00.0, end=2019-07-01 17:00:00.0, time=600], [begin=2019-07-01 "
 				+ "18:30:00.0, end=2019-07-01 22:00:00.0, time=210]]], Room [room=345, freeTimes=[["
@@ -244,17 +284,23 @@ public class TestEventManager {
 		
 		String dateAsString = "2019-07-01";
 		Date dateAsDate = new Date(formatSQL.parse(dateAsString).getTime());
-		eventManager.extractRoomsAtUniversity();
-		eventManager.loadNewByDate(dateAsDate, dateAsString);
-
-		String freeRoomInfo = eventManager.getFreeRoomList().toString();
 		
-		eventManager.setRooms(null);
-		assertTrue(freeRoomInfo.equals(erwartet));
+		try {
+			eventManager.extractRoomsAtUniversity();
+			eventManager.loadNewByDate(dateAsDate, dateAsString);
+			freeRoomInfo = eventManager.getFreeRoomList().toString();
+		} catch (Exception e) {
+			System.out.println("Bitte pruefen, ob die Datei db_connect/db_tables.properties vervollstaendigt ist!");
+		}
+
+		eventManager.setRooms(null); // for next tests necessary
+		assertTrue(freeRoomInfo!=null && freeRoomInfo.equals(erwartet));
 	}
 	
 	@Test
 	public void greeFreeRoomsTest() throws ParseException {
+		String responsedJson = null;
+		
 		String erwartetJson = "[{\"date\":\"2019-07-01 00:00\",\"roomName\":\"123\",\"beginTime\":\""
 				+ "2019-07-01 07:00\",\"endTime\":\"2019-07-01 17:00\",\"time\":600},{\"date\":\"2019-07-01 "
 				+ "00:00\",\"roomName\":\"345\",\"beginTime\":\"2019-07-01 07:00\",\"endTime\":\"2019-07-01 09:45\",\""
@@ -273,13 +319,16 @@ public class TestEventManager {
 		
 		String dateAsString = "2019-07-01";
 		Date dateAsDate = new Date(formatSQL.parse(dateAsString).getTime());
-		eventManager.extractRoomsAtUniversity();
 		
-		String responsedJson = eventManager.getFreeRooms(dateAsDate, dateAsString, "", 15, 30);
-		
+		try {
+			eventManager.extractRoomsAtUniversity();
+			responsedJson = eventManager.getFreeRooms(dateAsDate, dateAsString, "", 15, 30);
+		} catch (Exception e) {
+			System.out.println("Bitte pruefen, ob die Datei db_connect/db_tables.properties vervollstaendigt ist!");
+		}
+
 		eventManager.setRooms(null);
-		assertTrue(responsedJson.equals(erwartetJson));
+		assertTrue(responsedJson!=null && responsedJson.equals(erwartetJson));
 	}
-	
-	
+
 }
